@@ -336,6 +336,243 @@
         .def { background: #4ecdc4; }
         .mid { background: #45b7d1; }
         .fwd { background: #f9ca24; }
+
+        /* 球员详情模态框 */
+        .player-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .player-modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 100, 45, 0.95), rgba(10, 80, 40, 0.95));
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border: 3px solid #ffd700;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: #fff;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 0, 0, 0.5);
+            border-color: #ff0000;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            padding: 40px 30px 30px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .modal-player-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 5px solid #ffd700;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .modal-player-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-player-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .modal-player-name-en {
+            font-size: 1.2em;
+            color: #ccc;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .modal-player-basics {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .modal-basic-item {
+            text-align: center;
+        }
+
+        .modal-basic-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .modal-basic-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-section {
+            margin-bottom: 30px;
+        }
+
+        .modal-section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #ffd700;
+            border-radius: 2px;
+        }
+
+        .modal-intro {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #fff;
+            text-align: justify;
+        }
+
+        .modal-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 25px;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.3));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .modal-stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .modal-stat-item:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            transform: translateY(-5px);
+        }
+
+        .modal-stat-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .modal-stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                max-width: 95%;
+            }
+
+            .modal-player-name {
+                font-size: 2em;
+            }
+
+            .modal-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-player-basics {
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -377,6 +614,69 @@
         <div id="teamDisplay"></div>
     </div>
 
+    <!-- 球员详情模态框 -->
+    <div id="playerModal" class="player-modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closePlayerModal()">×</div>
+            <div class="modal-header">
+                <div class="modal-player-photo">
+                    <img id="modalPlayerPhoto" src="" alt="">
+                </div>
+                <div class="modal-player-name" id="modalPlayerName"></div>
+                <div class="modal-player-name-en" id="modalPlayerNameEn"></div>
+                <div class="modal-player-basics">
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">球衣号码</div>
+                        <div class="modal-basic-value" id="modalPlayerNum"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">位置</div>
+                        <div class="modal-basic-value" id="modalPlayerPos"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">年龄</div>
+                        <div class="modal-basic-value" id="modalPlayerAge"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">身高</div>
+                        <div class="modal-basic-value" id="modalPlayerHeight"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">俱乐部</div>
+                        <div class="modal-basic-value" id="modalPlayerClub"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">球员介绍</div>
+                    <div class="modal-intro" id="modalPlayerIntro"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">擅长技能</div>
+                    <div class="modal-skills" id="modalPlayerSkills"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">国家队数据</div>
+                    <div class="modal-stats">
+                        <div class="modal-stat-item">
+                            <div class="modal-stat-label">出场次数</div>
+                            <div class="modal-stat-value" id="modalPlayerCaps"></div>
+                        </div>
+                        <div class="modal-stat-item">
+                            <div class="modal-stat-label">进球数</div>
+                            <div class="modal-stat-value" id="modalPlayerGoals"></div>
+                        </div>
+                        <div class="modal-stat-item">
+                            <div class="modal-stat-label">助攻数</div>
+                            <div class="modal-stat-value" id="modalPlayerAssists"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const teams = {
             spain: {
@@ -397,9 +697,51 @@
                         { num: 6, name: 'Gavi', nameCN: '加维', club: '巴塞罗那', avatar: 'GA', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Gavi_2022.jpg/220px-Gavi_2022.jpg' }
                     ],
                     fwd: [
-                        { num: 19, name: 'Lamine Yamal', nameCN: '亚马尔', club: '巴塞罗那', avatar: 'LY', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Lamine_Yamal_2024.jpg/220px-Lamine_Yamal_2024.jpg' },
-                        { num: 7, name: 'Álvaro Morata', nameCN: '莫拉塔', club: 'AC米兰', avatar: 'AM', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%C3%81lvaro_Morata_2018.jpg/220px-%C3%81lvaro_Morata_2018.jpg' },
-                        { num: 21, name: 'Nico Williams', nameCN: '尼科·威廉姆斯', club: '毕尔巴鄂竞技', avatar: 'NW', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Nico_Williams_2024.jpg/220px-Nico_Williams_2024.jpg' }
+                        {
+                            num: 19,
+                            name: 'Lamine Yamal',
+                            nameCN: '亚马尔',
+                            club: '巴塞罗那',
+                            avatar: 'LY',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Lamine_Yamal_2024.jpg/220px-Lamine_Yamal_2024.jpg',
+                            age: 17,
+                            position: '右边锋',
+                            nationality: '西班牙',
+                            height: '180cm',
+                            intro: '年仅17岁的天才边锋，西班牙足球的未来之星。技术出众，盘带能力惊人，在2024年欧洲杯上表现出色，成为赛事最年轻的进球者。',
+                            skills: ['盘带', '突破', '传中', '速度', '创造力'],
+                            career: { caps: 12, goals: 3, assists: 5 }
+                        },
+                        {
+                            num: 7,
+                            name: 'Álvaro Morata',
+                            nameCN: '莫拉塔',
+                            club: 'AC米兰',
+                            avatar: 'AM',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%C3%81lvaro_Morata_2018.jpg/220px-%C3%81lvaro_Morata_2018.jpg',
+                            age: 31,
+                            position: '中锋',
+                            nationality: '西班牙',
+                            height: '189cm',
+                            intro: '经验丰富的中锋，西班牙国家队的进攻支柱。擅长背身拿球和做球，头球能力出色，是典型的桥头堡式前锋。',
+                            skills: ['头球', '背身拿球', '做球', '抢点', '跑位'],
+                            career: { caps: 78, goals: 36, assists: 12 }
+                        },
+                        {
+                            num: 21,
+                            name: 'Nico Williams',
+                            nameCN: '尼科·威廉姆斯',
+                            club: '毕尔巴鄂竞技',
+                            avatar: 'NW',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Nico_Williams_2024.jpg/220px-Nico_Williams_2024.jpg',
+                            age: 22,
+                            position: '左边锋',
+                            nationality: '西班牙',
+                            height: '181cm',
+                            intro: '速度极快的边锋，拥有出色的爆发力和过人能力。在2024年欧洲杯决赛中打入关键进球，帮助西班牙夺冠。',
+                            skills: ['速度', '突破', '过人', '射门', '体能'],
+                            career: { caps: 28, goals: 5, assists: 8 }
+                        }
                     ]
                 },
                 stats: {
@@ -427,9 +769,51 @@
                         { num: 7, name: 'Antoine Griezmann', nameCN: '格列兹曼', club: '马德里竞技', avatar: 'AG', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Antoine_Griezmann_2018.jpg/220px-Antoine_Griezmann_2018.jpg' }
                     ],
                     fwd: [
-                        { num: 11, name: 'Ousmane Dembélé', nameCN: '登贝莱', club: '巴黎圣日耳曼', avatar: 'OD', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Ousmane_Demb%C3%A9l%C3%A9_2018.jpg/220px-Ousmane_Demb%C3%A9l%C3%A9_2018.jpg' },
-                        { num: 10, name: 'Kylian Mbappé', nameCN: '姆巴佩', club: '皇家马德里', avatar: 'KM', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Kylian_Mbapp%C3%A9_2018_%28cropped%29.jpg/220px-Kylian_Mbapp%C3%A9_2018_%28cropped%29.jpg' },
-                        { num: 20, name: 'Kingsley Coman', nameCN: '科曼', club: '拜仁慕尼黑', avatar: 'KC', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Kingsley_Coman_2019.jpg/220px-Kingsley_Coman_2019.jpg' }
+                        {
+                            num: 11,
+                            name: 'Ousmane Dembélé',
+                            nameCN: '登贝莱',
+                            club: '巴黎圣日耳曼',
+                            avatar: 'OD',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Ousmane_Demb%C3%A9l%C3%A9_2018.jpg/220px-Ousmane_Demb%C3%A9l%C3%A9_2018.jpg',
+                            age: 27,
+                            position: '右边锋',
+                            nationality: '法国',
+                            height: '178cm',
+                            intro: '速度型边锋，拥有出色的盘带和突破能力。双脚技术均衡，能够在边路制造威胁。曾效力巴塞罗那，现为巴黎圣日耳曼的核心球员。',
+                            skills: ['盘带', '速度', '突破', '双脚均衡', '传中'],
+                            career: { caps: 52, goals: 6, assists: 13 }
+                        },
+                        {
+                            num: 10,
+                            name: 'Kylian Mbappé',
+                            nameCN: '姆巴佩',
+                            club: '皇家马德里',
+                            avatar: 'KM',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Kylian_Mbapp%C3%A9_2018_%28cropped%29.jpg/220px-Kylian_Mbapp%C3%A9_2018_%28cropped%29.jpg',
+                            age: 27,
+                            position: '中锋/左边锋',
+                            nationality: '法国',
+                            height: '178cm',
+                            intro: '当今世界足坛最顶级的前锋之一，速度惊人，射门能力出众。18岁随法国队夺得2018世界杯冠军，是法国队的绝对核心。2024年转会皇家马德里，开启新篇章。',
+                            skills: ['极速', '射门', '盘带', '突破', '终结能力'],
+                            career: { caps: 89, goals: 56, assists: 32 }
+                        },
+                        {
+                            num: 20,
+                            name: 'Kingsley Coman',
+                            nameCN: '科曼',
+                            club: '拜仁慕尼黑',
+                            avatar: 'KC',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Kingsley_Coman_2019.jpg/220px-Kingsley_Coman_2019.jpg',
+                            age: 28,
+                            position: '边锋',
+                            nationality: '法国',
+                            height: '180cm',
+                            intro: '技术出色的边锋，擅长边路突破和内切射门。拜仁慕尼黑的重要轮换球员，曾在2020年欧冠决赛打入制胜球。',
+                            skills: ['突破', '内切', '传中', '速度', '灵活性'],
+                            career: { caps: 57, goals: 5, assists: 12 }
+                        }
                     ]
                 },
                 stats: {
@@ -457,9 +841,51 @@
                         { num: 24, name: 'Enzo Fernández', nameCN: '恩佐', club: '切尔西', avatar: 'EF', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Enzo_Fern%C3%A1ndez_2022.jpg/220px-Enzo_Fern%C3%A1ndez_2022.jpg' }
                     ],
                     fwd: [
-                        { num: 11, name: 'Ángel Di María', nameCN: '迪玛利亚', club: '本菲卡', avatar: 'DM', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/%C3%81ngel_Di_Mar%C3%ADa_2018.jpg/220px-%C3%81ngel_Di_Mar%C3%ADa_2018.jpg' },
-                        { num: 10, name: 'Lionel Messi', nameCN: '梅西', club: '迈阿密国际', avatar: 'LM', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/220px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg' },
-                        { num: 22, name: 'Lautaro Martínez', nameCN: '劳塔罗', club: '国际米兰', avatar: 'LT', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Lautaro_Mart%C3%ADnez_2018.jpg/220px-Lautaro_Mart%C3%ADnez_2018.jpg' }
+                        {
+                            num: 11,
+                            name: 'Ángel Di María',
+                            nameCN: '迪玛利亚',
+                            club: '本菲卡',
+                            avatar: 'DM',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/%C3%81ngel_Di_Mar%C3%ADa_2018.jpg/220px-%C3%81ngel_Di_Mar%C3%ADa_2018.jpg',
+                            age: 36,
+                            position: '边锋',
+                            nationality: '阿根廷',
+                            height: '180cm',
+                            intro: '阿根廷足球的传奇边锋，技术细腻，传球精准。2022年世界杯决赛打入关键进球，帮助阿根廷时隔36年再夺世界杯。职业生涯荣誉满载，是梅西最信任的队友之一。',
+                            skills: ['传球', '盘带', '远射', '任意球', '经验'],
+                            career: { caps: 145, goals: 31, assists: 41 }
+                        },
+                        {
+                            num: 10,
+                            name: 'Lionel Messi',
+                            nameCN: '梅西',
+                            club: '迈阿密国际',
+                            avatar: 'LM',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/220px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg',
+                            age: 39,
+                            position: '前锋/前腰',
+                            nationality: '阿根廷',
+                            height: '170cm',
+                            intro: '足球史上最伟大的球员之一，8次金球奖得主。2022年率领阿根廷夺得世界杯冠军，完成职业生涯大满贯。盘带技术无与伦比，传射俱佳，是当代足球的象征性人物。',
+                            skills: ['盘带', '射门', '传球', '任意球', '视野', '领袖气质'],
+                            career: { caps: 189, goals: 112, assists: 62 }
+                        },
+                        {
+                            num: 22,
+                            name: 'Lautaro Martínez',
+                            nameCN: '劳塔罗',
+                            club: '国际米兰',
+                            avatar: 'LT',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Lautaro_Mart%C3%ADnez_2018.jpg/220px-Lautaro_Mart%C3%ADnez_2018.jpg',
+                            age: 27,
+                            position: '中锋',
+                            nationality: '阿根廷',
+                            height: '174cm',
+                            intro: '阿根廷新生代前锋的代表人物，爆发力强，射门果断。国际米兰的进攻核心，与梅西配合默契。2022年世界杯重要球员，帮助球队夺冠。',
+                            skills: ['爆发力', '射门', '跑位', '抢点', '对抗'],
+                            career: { caps: 67, goals: 32, assists: 14 }
+                        }
                     ]
                 },
                 stats: {
@@ -482,14 +908,98 @@
                         { num: 3, name: 'Luke Shaw', nameCN: '卢克·肖', club: '曼联', avatar: 'LS', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Luke_Shaw_2018.jpg/220px-Luke_Shaw_2018.jpg' }
                     ],
                     mid: [
-                        { num: 4, name: 'Declan Rice', nameCN: '赖斯', club: '阿森纳', avatar: 'DR', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Declan_Rice_2018.jpg/220px-Declan_Rice_2018.jpg' },
-                        { num: 8, name: 'Jude Bellingham', nameCN: '贝林厄姆', club: '皇家马德里', avatar: 'JB', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jude_Bellingham_2023_%28cropped%29.jpg/220px-Jude_Bellingham_2023_%28cropped%29.jpg' },
-                        { num: 10, name: 'Phil Foden', nameCN: '福登', club: '曼城', avatar: 'PF', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Phil_Foden_2018.jpg/220px-Phil_Foden_2018.jpg' }
+                        {
+                            num: 4,
+                            name: 'Declan Rice',
+                            nameCN: '赖斯',
+                            club: '阿森纳',
+                            avatar: 'DR',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Declan_Rice_2018.jpg/220px-Declan_Rice_2018.jpg',
+                            age: 25,
+                            position: '后腰',
+                            nationality: '英格兰',
+                            height: '185cm',
+                            intro: '英格兰中场的防守核心,拦截能力出色,传球稳健。2023年以创纪录的转会费加盟阿森纳,迅速成为球队不可或缺的中场屏障。',
+                            skills: ['拦截', '传球', '防守', '体能', '位置感'],
+                            career: { caps: 58, goals: 3, assists: 5 }
+                        },
+                        {
+                            num: 8,
+                            name: 'Jude Bellingham',
+                            nameCN: '贝林厄姆',
+                            club: '皇家马德里',
+                            avatar: 'JB',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jude_Bellingham_2023_%28cropped%29.jpg/220px-Jude_Bellingham_2023_%28cropped%29.jpg',
+                            age: 23,
+                            position: '中场',
+                            nationality: '英格兰',
+                            height: '186cm',
+                            intro: '英格兰足球的未来领袖,全能型中场。2023年加盟皇马后表现惊艳,首赛季就打入超过20球。技术全面,进攻防守俱佳,成熟度远超年龄。',
+                            skills: ['全能', '进球', '视野', '领袖力', '对抗'],
+                            career: { caps: 42, goals: 5, assists: 8 }
+                        },
+                        {
+                            num: 10,
+                            name: 'Phil Foden',
+                            nameCN: '福登',
+                            club: '曼城',
+                            avatar: 'PF',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Phil_Foden_2018.jpg/220px-Phil_Foden_2018.jpg',
+                            age: 26,
+                            position: '前腰/边锋',
+                            nationality: '英格兰',
+                            height: '171cm',
+                            intro: '曼城青训瑰宝,技术细腻的攻击型中场。盘带出色,传球精准,射门能力强。在瓜迪奥拉体系下成长为世界级球员。',
+                            skills: ['盘带', '传球', '射门', '视野', '技术'],
+                            career: { caps: 48, goals: 8, assists: 12 }
+                        }
                     ],
                     fwd: [
-                        { num: 7, name: 'Bukayo Saka', nameCN: '萨卡', club: '阿森纳', avatar: 'BS', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Bukayo_Saka_2023_%28cropped%29.jpg/220px-Bukayo_Saka_2023_%28cropped%29.jpg' },
-                        { num: 9, name: 'Harry Kane', nameCN: '凯恩', club: '拜仁慕尼黑', avatar: 'HK', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Harry_Kane_2018.jpg/220px-Harry_Kane_2018.jpg' },
-                        { num: 11, name: 'Marcus Rashford', nameCN: '拉什福德', club: '曼联', avatar: 'MR', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Marcus_Rashford_2018.jpg/220px-Marcus_Rashford_2018.jpg' }
+                        {
+                            num: 7,
+                            name: 'Bukayo Saka',
+                            nameCN: '萨卡',
+                            club: '阿森纳',
+                            avatar: 'BS',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Bukayo_Saka_2023_%28cropped%29.jpg/220px-Bukayo_Saka_2023_%28cropped%29.jpg',
+                            age: 24,
+                            position: '右边锋',
+                            nationality: '英格兰',
+                            height: '178cm',
+                            intro: '英格兰新生代最出色的边锋之一，技术细腻，突破能力强。阿森纳队长级人物，能够在关键时刻挺身而出。2020欧洲杯决赛点球遗憾，但之后迅速成长为球队核心。',
+                            skills: ['盘带', '突破', '射门', '传中', '冷静'],
+                            career: { caps: 45, goals: 14, assists: 18 }
+                        },
+                        {
+                            num: 9,
+                            name: 'Harry Kane',
+                            nameCN: '凯恩',
+                            club: '拜仁慕尼黑',
+                            avatar: 'HK',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Harry_Kane_2018.jpg/220px-Harry_Kane_2018.jpg',
+                            age: 32,
+                            position: '中锋',
+                            nationality: '英格兰',
+                            height: '188cm',
+                            intro: '英格兰队长，世界级射手。射门技术精湛，头球能力出色，能够为队友创造机会。2024年转会拜仁慕尼黑，是英格兰国家队历史最佳射手。',
+                            skills: ['射门', '头球', '做球', '领袖气质', '点球'],
+                            career: { caps: 98, goals: 68, assists: 19 }
+                        },
+                        {
+                            num: 11,
+                            name: 'Marcus Rashford',
+                            nameCN: '拉什福德',
+                            club: '曼联',
+                            avatar: 'MR',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Marcus_Rashford_2018.jpg/220px-Marcus_Rashford_2018.jpg',
+                            age: 27,
+                            position: '左边锋',
+                            nationality: '英格兰',
+                            height: '180cm',
+                            intro: '速度型边锋，擅长利用速度突破防线。曼联青训出身，忠诚的红魔战士。拥有出色的射门能力和大局观。',
+                            skills: ['速度', '突破', '射门', '盘带', '反击'],
+                            career: { caps: 60, goals: 17, assists: 11 }
+                        }
                     ]
                 },
                 stats: {
@@ -517,9 +1027,51 @@
                         { num: 7, name: 'Lucas Paquetá', nameCN: '帕奎塔', club: '西汉姆联', avatar: 'LP', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Lucas_Paquet%C3%A1_2022.jpg/220px-Lucas_Paquet%C3%A1_2022.jpg' }
                     ],
                     fwd: [
-                        { num: 10, name: 'Neymar Jr', nameCN: '内马尔', club: '利雅得新月', avatar: 'NJ', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Neymar_Jr._with_Al_Hilal%2C_3_October_2023_-_03_%28cropped%29.jpg/220px-Neymar_Jr._with_Al_Hilal%2C_3_October_2023_-_03_%28cropped%29.jpg' },
-                        { num: 9, name: 'Richarlison', nameCN: '理查利森', club: '热刺', avatar: 'RI', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Richarlison_2022_%28cropped%29.jpg/220px-Richarlison_2022_%28cropped%29.jpg' },
-                        { num: 20, name: 'Vinícius Jr', nameCN: '维尼修斯', club: '皇家马德里', avatar: 'VJ', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Vinicius_J%C3%BAnior_2023_%28cropped%29.jpg/220px-Vinicius_J%C3%BAnior_2023_%28cropped%29.jpg' }
+                        {
+                            num: 10,
+                            name: 'Neymar Jr',
+                            nameCN: '内马尔',
+                            club: '利雅得新月',
+                            avatar: 'NJ',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Neymar_Jr._with_Al_Hilal%2C_3_October_2023_-_03_%28cropped%29.jpg/220px-Neymar_Jr._with_Al_Hilal%2C_3_October_2023_-_03_%28cropped%29.jpg',
+                            age: 34,
+                            position: '左边锋/前腰',
+                            nationality: '巴西',
+                            height: '175cm',
+                            intro: '巴西足球的旗帜性人物，技术华丽，富有创造力。盘带能力出众，任意球技术精湛。曾效力巴塞罗那和巴黎圣日耳曼，是巴西国家队历史第二射手，仅次于贝利。',
+                            skills: ['盘带', '任意球', '传球', '突破', '创造力', '表演性'],
+                            career: { caps: 128, goals: 79, assists: 56 }
+                        },
+                        {
+                            num: 9,
+                            name: 'Richarlison',
+                            nameCN: '理查利森',
+                            club: '热刺',
+                            avatar: 'RI',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Richarlison_2022_%28cropped%29.jpg/220px-Richarlison_2022_%28cropped%29.jpg',
+                            age: 27,
+                            position: '中锋',
+                            nationality: '巴西',
+                            height: '184cm',
+                            intro: '全能型前锋，能胜任多个进攻位置。体能充沛，拼抢积极，头球能力出色。在2022年世界杯上表现出色，是巴西队的重要得分点。',
+                            skills: ['头球', '拼抢', '跑位', '体能', '全能'],
+                            career: { caps: 52, goals: 21, assists: 8 }
+                        },
+                        {
+                            num: 20,
+                            name: 'Vinícius Jr',
+                            nameCN: '维尼修斯',
+                            club: '皇家马德里',
+                            avatar: 'VJ',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Vinicius_J%C3%BAnior_2023_%28cropped%29.jpg/220px-Vinicius_J%C3%BAnior_2023_%28cropped%29.jpg',
+                            age: 25,
+                            position: '左边锋',
+                            nationality: '巴西',
+                            height: '176cm',
+                            intro: '巴西新生代球星，速度惊人，突破能力出众。皇家马德里的核心球员，2024年欧冠决赛独中两元帮助球队夺冠。被认为是内马尔的接班人。',
+                            skills: ['极速', '突破', '盘带', '射门', '爆发力'],
+                            career: { caps: 45, goals: 14, assists: 16 }
+                        }
                     ]
                 },
                 stats: {
@@ -577,9 +1129,51 @@
                         { num: 10, name: 'Bernardo Silva', nameCN: '贝尔纳多', club: '曼城', avatar: 'BS', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bernardo_Silva_2018.jpg/220px-Bernardo_Silva_2018.jpg' }
                     ],
                     fwd: [
-                        { num: 11, name: 'João Félix', nameCN: '菲利克斯', club: '巴塞罗那', avatar: 'JF', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Jo%C3%A3o_F%C3%A9lix_2019.jpg/220px-Jo%C3%A3o_F%C3%A9lix_2019.jpg' },
-                        { num: 7, name: 'Cristiano Ronaldo', nameCN: 'C罗', club: '利雅得胜利', avatar: 'CR', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/220px-Cristiano_Ronaldo_2018.jpg' },
-                        { num: 17, name: 'Rafael Leão', nameCN: '莱奥', club: 'AC米兰', avatar: 'RL', photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Rafael_Le%C3%A3o_2023_%28cropped%29.jpg/220px-Rafael_Le%C3%A3o_2023_%28cropped%29.jpg' }
+                        {
+                            num: 11,
+                            name: 'João Félix',
+                            nameCN: '菲利克斯',
+                            club: '巴塞罗那',
+                            avatar: 'JF',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Jo%C3%A3o_F%C3%A9lix_2019.jpg/220px-Jo%C3%A3o_F%C3%A9lix_2019.jpg',
+                            age: 24,
+                            position: '前腰/前锋',
+                            nationality: '葡萄牙',
+                            height: '181cm',
+                            intro: '技术型前锋，盘带细腻，传球视野开阔。曾被寄予厚望成为C罗接班人，拥有出色的脚下技术和创造力。现效力巴塞罗那，正在重拾巅峰状态。',
+                            skills: ['盘带', '传球', '视野', '技术', '创造力'],
+                            career: { caps: 48, goals: 10, assists: 8 }
+                        },
+                        {
+                            num: 7,
+                            name: 'Cristiano Ronaldo',
+                            nameCN: 'C罗',
+                            club: '利雅得胜利',
+                            avatar: 'CR',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/220px-Cristiano_Ronaldo_2018.jpg',
+                            age: 41,
+                            position: '中锋',
+                            nationality: '葡萄牙',
+                            height: '187cm',
+                            intro: '足球史上最伟大的球员之一，5次金球奖得主。职业生涯荣誉无数，进球纪录惊人。即使年过40岁，依然保持着顶级的身体状态和进球能力。葡萄牙国家队历史最佳射手，真正的传奇。',
+                            skills: ['射门', '头球', '任意球', '身体素质', '领袖气质', '自律'],
+                            career: { caps: 215, goals: 133, assists: 45 }
+                        },
+                        {
+                            num: 17,
+                            name: 'Rafael Leão',
+                            nameCN: '莱奥',
+                            club: 'AC米兰',
+                            avatar: 'RL',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Rafael_Le%C3%A3o_2023_%28cropped%29.jpg/220px-Rafael_Le%C3%A3o_2023_%28cropped%29.jpg',
+                            age: 25,
+                            position: '左边锋',
+                            nationality: '葡萄牙',
+                            height: '188cm',
+                            intro: '葡萄牙新生代最具潜力的边锋，身材高大但速度惊人。AC米兰的进攻核心，拥有出色的突破能力和射门技术。被认为是葡萄牙未来的核心球员。',
+                            skills: ['速度', '突破', '盘带', '射门', '身体对抗'],
+                            career: { caps: 38, goals: 8, assists: 6 }
+                        }
                     ]
                 },
                 stats: {
@@ -605,8 +1199,8 @@
 
                     <!-- 前锋线 -->
                     <div class="pitch-line">
-                        ${team.players.fwd.map(p => `
-                            <div class="player-card" style="border-color: #f9ca24;">
+                        ${team.players.fwd.map((p, idx) => `
+                            <div class="player-card" style="border-color: #f9ca24;" data-team="${teamKey}" data-position="fwd" data-index="${idx}">
                                 <div class="player-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#ffd700,#ffed4e)';this.style.display='none'"></div>
                                 <div class="player-number">${p.num}</div>
                                 <div class="player-name">${p.nameCN}</div>
@@ -619,8 +1213,8 @@
 
                     <!-- 中场线 -->
                     <div class="pitch-line">
-                        ${team.players.mid.map(p => `
-                            <div class="player-card" style="border-color: #45b7d1;">
+                        ${team.players.mid.map((p, idx) => `
+                            <div class="player-card" style="border-color: #45b7d1;" data-team="${teamKey}" data-position="mid" data-index="${idx}">
                                 <div class="player-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#ffd700,#ffed4e)';this.style.display='none'"></div>
                                 <div class="player-number">${p.num}</div>
                                 <div class="player-name">${p.nameCN}</div>
@@ -633,8 +1227,8 @@
 
                     <!-- 后卫线 -->
                     <div class="pitch-line">
-                        ${team.players.def.map(p => `
-                            <div class="player-card" style="border-color: #4ecdc4;">
+                        ${team.players.def.map((p, idx) => `
+                            <div class="player-card" style="border-color: #4ecdc4;" data-team="${teamKey}" data-position="def" data-index="${idx}">
                                 <div class="player-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#ffd700,#ffed4e)';this.style.display='none'"></div>
                                 <div class="player-number">${p.num}</div>
                                 <div class="player-name">${p.nameCN}</div>
@@ -647,8 +1241,8 @@
 
                     <!-- 门将 -->
                     <div class="pitch-line" style="justify-content: center;">
-                        ${team.players.gk.map(p => `
-                            <div class="player-card" style="border-color: #ff6b6b;">
+                        ${team.players.gk.map((p, idx) => `
+                            <div class="player-card" style="border-color: #ff6b6b;" data-team="${teamKey}" data-position="gk" data-index="${idx}">
                                 <div class="player-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#ffd700,#ffed4e)';this.style.display='none'"></div>
                                 <div class="player-number">${p.num}</div>
                                 <div class="player-name">${p.nameCN}</div>
@@ -682,6 +1276,17 @@
                     </div>
                 </div>
             `;
+
+            // 添加点击事件监听器
+            document.querySelectorAll('.player-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const teamKey = this.getAttribute('data-team');
+                    const position = this.getAttribute('data-position');
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const player = teams[teamKey].players[position][index];
+                    openPlayerModal(player);
+                });
+            });
         }
 
         // Wikipedia article titles for each player
@@ -827,6 +1432,89 @@
             }
             console.log(`✅ 头像加载完成`);
         }
+
+        // 打开球员详情弹窗
+        function openPlayerModal(player) {
+            // 检查球员是否有详细信息
+            if (!player.intro) {
+                alert('该球员的详细信息暂未收录');
+                return;
+            }
+
+            const modal = document.getElementById('playerModal');
+
+            // 填充球员信息
+            document.getElementById('modalPlayerName').textContent = player.nameCN;
+            document.getElementById('modalPlayerNameEn').textContent = player.name;
+            document.getElementById('modalPlayerNum').textContent = `#${player.num}`;
+            document.getElementById('modalPlayerPos').textContent = player.position || '前锋';
+            document.getElementById('modalPlayerAge').textContent = player.age ? `${player.age}岁` : '---';
+            document.getElementById('modalPlayerHeight').textContent = player.height || '---';
+            document.getElementById('modalPlayerClub').textContent = player.club;
+
+            // 球员照片
+            const photoImg = document.getElementById('modalPlayerPhoto');
+            if (imageCache[player.name]) {
+                photoImg.src = imageCache[player.name];
+            } else {
+                photoImg.src = '';
+                photoImg.style.display = 'none';
+            }
+
+            // 球员介绍
+            document.getElementById('modalPlayerIntro').textContent = player.intro || '暂无介绍';
+
+            // 技能标签
+            const skillsContainer = document.getElementById('modalPlayerSkills');
+            skillsContainer.innerHTML = '';
+            if (player.skills && player.skills.length > 0) {
+                player.skills.forEach(skill => {
+                    const tag = document.createElement('div');
+                    tag.className = 'skill-tag';
+                    tag.textContent = skill;
+                    skillsContainer.appendChild(tag);
+                });
+            } else {
+                skillsContainer.innerHTML = '<div style="color: #aaa;">暂无技能数据</div>';
+            }
+
+            // 国家队数据
+            if (player.career) {
+                document.getElementById('modalPlayerCaps').textContent = player.career.caps || '---';
+                document.getElementById('modalPlayerGoals').textContent = player.career.goals || '---';
+                document.getElementById('modalPlayerAssists').textContent = player.career.assists || '---';
+            } else {
+                document.getElementById('modalPlayerCaps').textContent = '---';
+                document.getElementById('modalPlayerGoals').textContent = '---';
+                document.getElementById('modalPlayerAssists').textContent = '---';
+            }
+
+            // 显示模态框
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭球员详情弹窗
+        function closePlayerModal() {
+            const modal = document.getElementById('playerModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击模态框外部关闭
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('playerModal');
+            if (e.target === modal) {
+                closePlayerModal();
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePlayerModal();
+            }
+        });
 
         // 初始化显示西班牙
         window.onload = async () => {
