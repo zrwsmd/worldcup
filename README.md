@@ -14,8 +14,21 @@
 
 ## 🎮 在线演示
 
+**GitHub Pages 在线访问：**
 ```
-直接在浏览器中打开 worldcup2026_players.html 文件即可查看
+https://zrwsmd.github.io/worldcup/worldcup2026_players.html
+```
+
+> 📝 **注意**：如果是第一次部署，需要在 GitHub 仓库设置中启用 GitHub Pages：
+> 1. 进入仓库 Settings（设置）
+> 2. 找到 Pages 选项
+> 3. Source 选择 `gh-pages` 分支
+> 4. 点击 Save（保存）
+> 5. 等待几分钟后即可访问
+
+**本地运行：**
+```
+直接在浏览器中打开 worldcup2026_players.html 文件（照片功能受限）
 ```
 
 ## 🚀 快速开始
