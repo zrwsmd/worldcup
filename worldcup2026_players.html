@@ -9191,7 +9191,6 @@
                             career: { caps: 22, goals: 6, assists: 5 }
                         }
                     ]
-                    ]
                 },
                 stats: {
                     avgAge: '28.9岁',
@@ -9978,14 +9977,15 @@
 
         // 初始化显示西班牙
         window.onload = async () => {
-            showTeam('spain');
+            const firstBtn = document.querySelector('.team-btn.active');
+            showTeam('spain', firstBtn);
             await loadAvatars();
         };
 
         // Hook into showTeam to reload avatars after render
         const _origShowTeam = showTeam;
-        showTeam = async function(teamKey) {
-            _origShowTeam(teamKey);
+        showTeam = async function(teamKey, button) {
+            _origShowTeam(teamKey, button);
             await loadAvatars();
         };
     </script>
