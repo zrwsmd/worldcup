@@ -954,6 +954,180 @@
                 gap: 15px;
             }
         }
+
+        /* 视图切换按钮 */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .view-toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .view-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .view-toggle-btn.active {
+            background: #ffd700;
+            color: #0a4d2e;
+            border-color: #ffd700;
+        }
+
+        /* 赛程表容器 */
+        .schedule-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .schedule-container.active {
+            display: block;
+        }
+
+        /* 赛程阶段筛选 */
+        .stage-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stage-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .stage-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffd700;
+        }
+
+        .stage-btn.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        /* 赛程日期分组 */
+        .schedule-date-group {
+            margin-bottom: 30px;
+        }
+
+        .schedule-date-title {
+            font-size: 1.4em;
+            color: #ffd700;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            border-radius: 4px;
+        }
+
+        /* 赛程比赛卡片 */
+        .schedule-matches {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .schedule-match-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .schedule-match-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffd700;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .schedule-match-time {
+            font-size: 1em;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .schedule-match-teams {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            color: #fff;
+        }
+
+        .schedule-match-vs {
+            color: #ffd700;
+            margin: 0 10px;
+        }
+
+        .schedule-match-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 0.95em;
+        }
+
+        .schedule-match-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .schedule-match-icon {
+            font-size: 1.1em;
+        }
+
+        /* 阵容视图容器 */
+        .lineup-container {
+            display: block;
+        }
+
+        .lineup-container.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .view-toggle-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+
+            .schedule-matches {
+                grid-template-columns: 1fr;
+            }
+
+            .schedule-match-teams {
+                font-size: 1.1em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -963,6 +1137,14 @@
             <p style="font-size: 1.2em; opacity: 0.9;">顶级球星 · 首发阵容 · 战术布阵</p>
         </header>
 
+        <!-- 视图切换 -->
+        <div class="view-toggle">
+            <button class="view-toggle-btn active" onclick="switchView('lineup')">⚽ 球队阵容</button>
+            <button class="view-toggle-btn" onclick="switchView('schedule')">📅 完整赛程</button>
+        </div>
+
+        <!-- 阵容视图容器 -->
+        <div class="lineup-container" id="lineupContainer">
         <div class="legend">
             <div class="legend-item">
                 <div class="legend-color gk"></div>
@@ -1091,6 +1273,22 @@
         </div>
 
         <div id="teamDisplay"></div>
+        </div>
+        <!-- 阵容视图容器结束 -->
+
+        <!-- 赛程表容器 -->
+        <div class="schedule-container" id="scheduleContainer">
+            <div class="stage-filter">
+                <button class="stage-btn active" onclick="filterSchedule('all')">全部赛程</button>
+                <button class="stage-btn" onclick="filterSchedule('group')">小组赛</button>
+                <button class="stage-btn" onclick="filterSchedule('round16')">1/8决赛</button>
+                <button class="stage-btn" onclick="filterSchedule('quarter')">1/4决赛</button>
+                <button class="stage-btn" onclick="filterSchedule('semi')">半决赛</button>
+                <button class="stage-btn" onclick="filterSchedule('final')">决赛</button>
+            </div>
+
+            <div id="scheduleContent"></div>
+        </div>
     </div>
 
     <!-- 球员详情模态框 -->
@@ -13476,6 +13674,175 @@
             _origShowTeam(teamKey, button);
             await loadAvatars();
         };
+
+        // 赛程表数据
+        const scheduleData = [
+            // 小组赛 - 6月11日
+            { date: '2026-06-11', time: '03:00', homeTeam: '🇲🇽 墨西哥', awayTeam: '🇳🇴 挪威', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-11', time: '06:00', homeTeam: '🇺🇾 乌拉圭', awayTeam: '🇰🇷 韩国', venue: '蒙特雷BBVA体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-11', time: '21:00', homeTeam: '🇺🇸 美国', awayTeam: '🇨🇿 捷克', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
+            { date: '2026-06-11', time: '00:00', homeTeam: '🇨🇦 加拿大', awayTeam: '🇧🇦 波黑', venue: '多伦多BMO球场', group: 'B组', stage: 'group' },
+
+            // 小组赛 - 6月12日
+            { date: '2026-06-12', time: '03:00', homeTeam: '🇪🇸 西班牙', awayTeam: '🇮🇷 伊朗', venue: '迈阿密硬石体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-12', time: '06:00', homeTeam: '🇩🇪 德国', awayTeam: '🇩🇿 阿尔及利亚', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-12', time: '21:00', homeTeam: '🇦🇷 阿根廷', awayTeam: '🇸🇳 塞内加尔', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
+            { date: '2026-06-12', time: '00:00', homeTeam: '🇵🇹 葡萄牙', awayTeam: '🇬🇭 加纳', venue: '费城林肯金融球场', group: 'D组', stage: 'group' },
+
+            // 小组赛 - 6月13日
+            { date: '2026-06-13', time: '03:00', homeTeam: '🇫🇷 法国', awayTeam: '🇦🇺 澳大利亚', venue: '达拉斯AT&T体育场', group: 'E组', stage: 'group' },
+            { date: '2026-06-13', time: '06:00', homeTeam: '🇧🇷 巴西', awayTeam: '🇪🇬 埃及', venue: '休斯顿NRG体育场', group: 'E组', stage: 'group' },
+            { date: '2026-06-13', time: '21:00', homeTeam: '🇳🇱 荷兰', awayTeam: '🇨🇮 科特迪瓦', venue: '西雅图流明球场', group: 'F组', stage: 'group' },
+            { date: '2026-06-13', time: '00:00', homeTeam: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰', awayTeam: '🇹🇳 突尼斯', venue: '波士顿吉列体育场', group: 'F组', stage: 'group' },
+
+            // 小组赛 - 6月14日
+            { date: '2026-06-14', time: '03:00', homeTeam: '🇧🇪 比利时', awayTeam: '🇸🇦 沙特', venue: '堪萨斯城箭头体育场', group: 'G组', stage: 'group' },
+            { date: '2026-06-14', time: '06:00', homeTeam: '🇭🇷 克罗地亚', awayTeam: '🇶🇦 卡塔尔', venue: '丹佛埃姆波利球场', group: 'G组', stage: 'group' },
+            { date: '2026-06-14', time: '21:00', homeTeam: '🇨🇴 哥伦比亚', awayTeam: '🇯🇵 日本', venue: '旧金山李维斯体育场', group: 'H组', stage: 'group' },
+            { date: '2026-06-14', time: '00:00', homeTeam: '🇨🇭 瑞士', awayTeam: '🇲🇦 摩洛哥', venue: '温哥华BC体育场', group: 'H组', stage: 'group' },
+
+            // 小组赛第二轮 - 6月15-18日
+            { date: '2026-06-15', time: '21:00', homeTeam: '🇰🇷 韩国', awayTeam: '🇲🇽 墨西哥', venue: '瓜达拉哈拉哈利斯科体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-15', time: '00:00', homeTeam: '🇳🇴 挪威', awayTeam: '🇺🇾 乌拉圭', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-16', time: '03:00', homeTeam: '🇧🇦 波黑', awayTeam: '🇺🇸 美国', venue: '多伦多BMO球场', group: 'B组', stage: 'group' },
+            { date: '2026-06-16', time: '06:00', homeTeam: '🇨🇿 捷克', awayTeam: '🇨🇦 加拿大', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
+
+            { date: '2026-06-17', time: '21:00', homeTeam: '🇮🇷 伊朗', awayTeam: '🇩🇪 德国', venue: '迈阿密硬石体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-17', time: '00:00', homeTeam: '🇩🇿 阿尔及利亚', awayTeam: '🇪🇸 西班牙', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-18', time: '03:00', homeTeam: '🇬🇭 加纳', awayTeam: '🇦🇷 阿根廷', venue: '费城林肯金融球场', group: 'D组', stage: 'group' },
+            { date: '2026-06-18', time: '06:00', homeTeam: '🇸🇳 塞内加尔', awayTeam: '🇵🇹 葡萄牙', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
+
+            // 小组赛第三轮 - 6月19-22日
+            { date: '2026-06-19', time: '21:00', homeTeam: '🇦🇺 澳大利亚', awayTeam: '🇧🇷 巴西', venue: '达拉斯AT&T体育场', group: 'E组', stage: 'group' },
+            { date: '2026-06-19', time: '00:00', homeTeam: '🇪🇬 埃及', awayTeam: '🇫🇷 法国', venue: '休斯顿NRG体育场', group: 'E组', stage: 'group' },
+            { date: '2026-06-20', time: '03:00', homeTeam: '🇹🇳 突尼斯', awayTeam: '🇳🇱 荷兰', venue: '波士顿吉列体育场', group: 'F组', stage: 'group' },
+            { date: '2026-06-20', time: '06:00', homeTeam: '🇨🇮 科特迪瓦', awayTeam: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰', venue: '西雅图流明球场', group: 'F组', stage: 'group' },
+
+            { date: '2026-06-21', time: '21:00', homeTeam: '🇶🇦 卡塔尔', awayTeam: '🇧🇪 比利时', venue: '丹佛埃姆波利球场', group: 'G组', stage: 'group' },
+            { date: '2026-06-21', time: '00:00', homeTeam: '🇸🇦 沙特', awayTeam: '🇭🇷 克罗地亚', venue: '堪萨斯城箭头体育场', group: 'G组', stage: 'group' },
+            { date: '2026-06-22', time: '03:00', homeTeam: '🇲🇦 摩洛哥', awayTeam: '🇨🇴 哥伦比亚', venue: '温哥华BC体育场', group: 'H组', stage: 'group' },
+            { date: '2026-06-22', time: '06:00', homeTeam: '🇯🇵 日本', awayTeam: '🇨🇭 瑞士', venue: '旧金山李维斯体育场', group: 'H组', stage: 'group' },
+
+            // 小组赛最后一轮 - 6月23-26日
+            { date: '2026-06-23', time: '21:00', homeTeam: '🇺🇾 乌拉圭', awayTeam: '🇲🇽 墨西哥', venue: '蒙特雷BBVA体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-23', time: '21:00', homeTeam: '🇰🇷 韩国', awayTeam: '🇳🇴 挪威', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
+            { date: '2026-06-24', time: '00:00', homeTeam: '🇨🇦 加拿大', awayTeam: '🇺🇸 美国', venue: '温哥华BC体育场', group: 'B组', stage: 'group' },
+            { date: '2026-06-24', time: '00:00', homeTeam: '🇧🇦 波黑', awayTeam: '🇨🇿 捷克', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
+
+            { date: '2026-06-25', time: '03:00', homeTeam: '🇪🇸 西班牙', awayTeam: '🇩🇪 德国', venue: '达拉斯AT&T体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-25', time: '03:00', homeTeam: '🇮🇷 伊朗', awayTeam: '🇩🇿 阿尔及利亚', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
+            { date: '2026-06-26', time: '06:00', homeTeam: '🇦🇷 阿根廷', awayTeam: '🇵🇹 葡萄牙', venue: '迈阿密硬石体育场', group: 'D组', stage: 'group' },
+            { date: '2026-06-26', time: '06:00', homeTeam: '🇬🇭 加纳', awayTeam: '🇸🇳 塞内加尔', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
+
+            // 1/8决赛 - 6月27-30日
+            { date: '2026-06-27', time: '21:00', homeTeam: 'A组第一', awayTeam: 'B组第二', venue: '洛杉矶玫瑰碗体育场', group: '1/8决赛 1', stage: 'round16' },
+            { date: '2026-06-28', time: '00:00', homeTeam: 'C组第一', awayTeam: 'D组第二', venue: '达拉斯AT&T体育场', group: '1/8决赛 2', stage: 'round16' },
+            { date: '2026-06-28', time: '21:00', homeTeam: 'B组第一', awayTeam: 'A组第二', venue: '费城林肯金融球场', group: '1/8决赛 3', stage: 'round16' },
+            { date: '2026-06-29', time: '00:00', homeTeam: 'D组第一', awayTeam: 'C组第二', venue: '纽约大都会人寿体育场', group: '1/8决赛 4', stage: 'round16' },
+            { date: '2026-06-29', time: '21:00', homeTeam: 'E组第一', awayTeam: 'F组第二', venue: '迈阿密硬石体育场', group: '1/8决赛 5', stage: 'round16' },
+            { date: '2026-06-30', time: '00:00', homeTeam: 'G组第一', awayTeam: 'H组第二', venue: '堪萨斯城箭头体育场', group: '1/8决赛 6', stage: 'round16' },
+            { date: '2026-06-30', time: '21:00', homeTeam: 'F组第一', awayTeam: 'E组第二', venue: '旧金山李维斯体育场', group: '1/8决赛 7', stage: 'round16' },
+            { date: '2026-07-01', time: '00:00', homeTeam: 'H组第一', awayTeam: 'G组第二', venue: '西雅图流明球场', group: '1/8决赛 8', stage: 'round16' },
+
+            // 1/4决赛 - 7月3-4日
+            { date: '2026-07-03', time: '21:00', homeTeam: '1/8决赛1胜者', awayTeam: '1/8决赛2胜者', venue: '波士顿吉列体育场', group: '1/4决赛 1', stage: 'quarter' },
+            { date: '2026-07-04', time: '00:00', homeTeam: '1/8决赛5胜者', awayTeam: '1/8决赛6胜者', venue: '亚特兰大梅赛德斯-奔驰体育场', group: '1/4决赛 2', stage: 'quarter' },
+            { date: '2026-07-04', time: '21:00', homeTeam: '1/8决赛3胜者', awayTeam: '1/8决赛4胜者', venue: '丹佛埃姆波利球场', group: '1/4决赛 3', stage: 'quarter' },
+            { date: '2026-07-05', time: '00:00', homeTeam: '1/8决赛7胜者', awayTeam: '1/8决赛8胜者', venue: '洛杉矶玫瑰碗体育场', group: '1/4决赛 4', stage: 'quarter' },
+
+            // 半决赛 - 7月7-8日
+            { date: '2026-07-07', time: '03:00', homeTeam: '1/4决赛1胜者', awayTeam: '1/4决赛2胜者', venue: '达拉斯AT&T体育场', group: '半决赛 1', stage: 'semi' },
+            { date: '2026-07-08', time: '03:00', homeTeam: '1/4决赛3胜者', awayTeam: '1/4决赛4胜者', venue: '亚特兰大梅赛德斯-奔驰体育场', group: '半决赛 2', stage: 'semi' },
+
+            // 三四名决赛 - 7月10日
+            { date: '2026-07-10', time: '21:00', homeTeam: '半决赛负者1', awayTeam: '半决赛负者2', venue: '迈阿密硬石体育场', group: '三四名决赛', stage: 'final' },
+
+            // 决赛 - 7月13日
+            { date: '2026-07-13', time: '03:00', homeTeam: '半决赛胜者1', awayTeam: '半决赛胜者2', venue: '纽约大都会人寿体育场', group: '决赛', stage: 'final' }
+        ];
+
+        // 视图切换函数
+        function switchView(view) {
+            const lineupContainer = document.getElementById('lineupContainer');
+            const scheduleContainer = document.getElementById('scheduleContainer');
+            const buttons = document.querySelectorAll('.view-toggle-btn');
+
+            if (view === 'lineup') {
+                lineupContainer.style.display = 'block';
+                scheduleContainer.classList.remove('active');
+                buttons[0].classList.add('active');
+                buttons[1].classList.remove('active');
+            } else if (view === 'schedule') {
+                lineupContainer.style.display = 'none';
+                scheduleContainer.classList.add('active');
+                buttons[0].classList.remove('active');
+                buttons[1].classList.add('active');
+                renderSchedule('all');
+            }
+        }
+
+        // 赛程筛选函数
+        function filterSchedule(stage) {
+            const buttons = document.querySelectorAll('.stage-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderSchedule(stage);
+        }
+
+        // 渲染赛程表
+        function renderSchedule(stage) {
+            const scheduleContent = document.getElementById('scheduleContent');
+            const filteredMatches = stage === 'all'
+                ? scheduleData
+                : scheduleData.filter(match => match.stage === stage);
+
+            // 按日期分组
+            const matchesByDate = {};
+            filteredMatches.forEach(match => {
+                if (!matchesByDate[match.date]) {
+                    matchesByDate[match.date] = [];
+                }
+                matchesByDate[match.date].push(match);
+            });
+
+            // 生成HTML
+            let html = '';
+            Object.keys(matchesByDate).sort().forEach(date => {
+                const dateObj = new Date(date + 'T00:00:00');
+                const dateStr = `${dateObj.getMonth() + 1}月${dateObj.getDate()}日 ${['周日','周一','周二','周三','周四','周五','周六'][dateObj.getDay()]}`;
+
+                html += `<div class="schedule-date-group">`;
+                html += `<div class="schedule-date-title">📅 ${dateStr}</div>`;
+                html += `<div class="schedule-matches">`;
+
+                matchesByDate[date].forEach(match => {
+                    html += `
+                        <div class="schedule-match-card">
+                            <div class="schedule-match-time">⏰ 北京时间 ${match.time}</div>
+                            <div class="schedule-match-teams">
+                                ${match.homeTeam}
+                                <span class="schedule-match-vs">VS</span>
+                                ${match.awayTeam}
+                            </div>
+                            <div class="schedule-match-info">
+                                <div class="schedule-match-info-item">
+                                    <span class="schedule-match-icon">🏟️</span>
+                                    <span>${match.venue}</span>
+                                </div>
+                                <div class="schedule-match-info-item">
+                                    <span class="schedule-match-icon">📊</span>
+                                    <span>${match.group}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            });
+
+            scheduleContent.innerHTML = html;
+        }
     </script>
 </body>
 </html>
