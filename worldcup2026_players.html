@@ -1086,6 +1086,27 @@
             margin: 0 10px;
         }
 
+        .schedule-match-score {
+            font-weight: bold;
+            color: #ff4444;
+            font-size: 1.3em;
+            margin: 0 10px;
+            padding: 5px 15px;
+            background: rgba(255, 68, 68, 0.1);
+            border-radius: 8px;
+            border: 2px solid #ff4444;
+        }
+
+        .schedule-match-finished {
+            background: linear-gradient(135deg, rgba(10, 77, 46, 0.6), rgba(20, 97, 66, 0.6));
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .schedule-match-finished:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
         .schedule-match-info {
             display: flex;
             flex-direction: column;
@@ -1281,9 +1302,11 @@
             <div class="stage-filter">
                 <button class="stage-btn active" onclick="filterSchedule('all')">全部赛程</button>
                 <button class="stage-btn" onclick="filterSchedule('group')">小组赛</button>
-                <button class="stage-btn" onclick="filterSchedule('round16')">1/8决赛</button>
+                <button class="stage-btn" onclick="filterSchedule('round32')">32强赛</button>
+                <button class="stage-btn" onclick="filterSchedule('round16')">16强赛</button>
                 <button class="stage-btn" onclick="filterSchedule('quarter')">1/4决赛</button>
                 <button class="stage-btn" onclick="filterSchedule('semi')">半决赛</button>
+                <button class="stage-btn" onclick="filterSchedule('third')">三四名决赛</button>
                 <button class="stage-btn" onclick="filterSchedule('final')">决赛</button>
             </div>
 
@@ -13676,90 +13699,1048 @@
         };
 
         // 赛程表数据
-        const scheduleData = [
-            // 小组赛 - 6月11日
-            { date: '2026-06-11', time: '03:00', homeTeam: '🇲🇽 墨西哥', awayTeam: '🇳🇴 挪威', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-11', time: '06:00', homeTeam: '🇺🇾 乌拉圭', awayTeam: '🇰🇷 韩国', venue: '蒙特雷BBVA体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-11', time: '21:00', homeTeam: '🇺🇸 美国', awayTeam: '🇨🇿 捷克', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
-            { date: '2026-06-11', time: '00:00', homeTeam: '🇨🇦 加拿大', awayTeam: '🇧🇦 波黑', venue: '多伦多BMO球场', group: 'B组', stage: 'group' },
-
-            // 小组赛 - 6月12日
-            { date: '2026-06-12', time: '03:00', homeTeam: '🇪🇸 西班牙', awayTeam: '🇮🇷 伊朗', venue: '迈阿密硬石体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-12', time: '06:00', homeTeam: '🇩🇪 德国', awayTeam: '🇩🇿 阿尔及利亚', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-12', time: '21:00', homeTeam: '🇦🇷 阿根廷', awayTeam: '🇸🇳 塞内加尔', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
-            { date: '2026-06-12', time: '00:00', homeTeam: '🇵🇹 葡萄牙', awayTeam: '🇬🇭 加纳', venue: '费城林肯金融球场', group: 'D组', stage: 'group' },
-
-            // 小组赛 - 6月13日
-            { date: '2026-06-13', time: '03:00', homeTeam: '🇫🇷 法国', awayTeam: '🇦🇺 澳大利亚', venue: '达拉斯AT&T体育场', group: 'E组', stage: 'group' },
-            { date: '2026-06-13', time: '06:00', homeTeam: '🇧🇷 巴西', awayTeam: '🇪🇬 埃及', venue: '休斯顿NRG体育场', group: 'E组', stage: 'group' },
-            { date: '2026-06-13', time: '21:00', homeTeam: '🇳🇱 荷兰', awayTeam: '🇨🇮 科特迪瓦', venue: '西雅图流明球场', group: 'F组', stage: 'group' },
-            { date: '2026-06-13', time: '00:00', homeTeam: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰', awayTeam: '🇹🇳 突尼斯', venue: '波士顿吉列体育场', group: 'F组', stage: 'group' },
-
-            // 小组赛 - 6月14日
-            { date: '2026-06-14', time: '03:00', homeTeam: '🇧🇪 比利时', awayTeam: '🇸🇦 沙特', venue: '堪萨斯城箭头体育场', group: 'G组', stage: 'group' },
-            { date: '2026-06-14', time: '06:00', homeTeam: '🇭🇷 克罗地亚', awayTeam: '🇶🇦 卡塔尔', venue: '丹佛埃姆波利球场', group: 'G组', stage: 'group' },
-            { date: '2026-06-14', time: '21:00', homeTeam: '🇨🇴 哥伦比亚', awayTeam: '🇯🇵 日本', venue: '旧金山李维斯体育场', group: 'H组', stage: 'group' },
-            { date: '2026-06-14', time: '00:00', homeTeam: '🇨🇭 瑞士', awayTeam: '🇲🇦 摩洛哥', venue: '温哥华BC体育场', group: 'H组', stage: 'group' },
-
-            // 小组赛第二轮 - 6月15-18日
-            { date: '2026-06-15', time: '21:00', homeTeam: '🇰🇷 韩国', awayTeam: '🇲🇽 墨西哥', venue: '瓜达拉哈拉哈利斯科体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-15', time: '00:00', homeTeam: '🇳🇴 挪威', awayTeam: '🇺🇾 乌拉圭', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-16', time: '03:00', homeTeam: '🇧🇦 波黑', awayTeam: '🇺🇸 美国', venue: '多伦多BMO球场', group: 'B组', stage: 'group' },
-            { date: '2026-06-16', time: '06:00', homeTeam: '🇨🇿 捷克', awayTeam: '🇨🇦 加拿大', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
-
-            { date: '2026-06-17', time: '21:00', homeTeam: '🇮🇷 伊朗', awayTeam: '🇩🇪 德国', venue: '迈阿密硬石体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-17', time: '00:00', homeTeam: '🇩🇿 阿尔及利亚', awayTeam: '🇪🇸 西班牙', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-18', time: '03:00', homeTeam: '🇬🇭 加纳', awayTeam: '🇦🇷 阿根廷', venue: '费城林肯金融球场', group: 'D组', stage: 'group' },
-            { date: '2026-06-18', time: '06:00', homeTeam: '🇸🇳 塞内加尔', awayTeam: '🇵🇹 葡萄牙', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
-
-            // 小组赛第三轮 - 6月19-22日
-            { date: '2026-06-19', time: '21:00', homeTeam: '🇦🇺 澳大利亚', awayTeam: '🇧🇷 巴西', venue: '达拉斯AT&T体育场', group: 'E组', stage: 'group' },
-            { date: '2026-06-19', time: '00:00', homeTeam: '🇪🇬 埃及', awayTeam: '🇫🇷 法国', venue: '休斯顿NRG体育场', group: 'E组', stage: 'group' },
-            { date: '2026-06-20', time: '03:00', homeTeam: '🇹🇳 突尼斯', awayTeam: '🇳🇱 荷兰', venue: '波士顿吉列体育场', group: 'F组', stage: 'group' },
-            { date: '2026-06-20', time: '06:00', homeTeam: '🇨🇮 科特迪瓦', awayTeam: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰', venue: '西雅图流明球场', group: 'F组', stage: 'group' },
-
-            { date: '2026-06-21', time: '21:00', homeTeam: '🇶🇦 卡塔尔', awayTeam: '🇧🇪 比利时', venue: '丹佛埃姆波利球场', group: 'G组', stage: 'group' },
-            { date: '2026-06-21', time: '00:00', homeTeam: '🇸🇦 沙特', awayTeam: '🇭🇷 克罗地亚', venue: '堪萨斯城箭头体育场', group: 'G组', stage: 'group' },
-            { date: '2026-06-22', time: '03:00', homeTeam: '🇲🇦 摩洛哥', awayTeam: '🇨🇴 哥伦比亚', venue: '温哥华BC体育场', group: 'H组', stage: 'group' },
-            { date: '2026-06-22', time: '06:00', homeTeam: '🇯🇵 日本', awayTeam: '🇨🇭 瑞士', venue: '旧金山李维斯体育场', group: 'H组', stage: 'group' },
-
-            // 小组赛最后一轮 - 6月23-26日
-            { date: '2026-06-23', time: '21:00', homeTeam: '🇺🇾 乌拉圭', awayTeam: '🇲🇽 墨西哥', venue: '蒙特雷BBVA体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-23', time: '21:00', homeTeam: '🇰🇷 韩国', awayTeam: '🇳🇴 挪威', venue: '墨西哥城阿兹特克体育场', group: 'A组', stage: 'group' },
-            { date: '2026-06-24', time: '00:00', homeTeam: '🇨🇦 加拿大', awayTeam: '🇺🇸 美国', venue: '温哥华BC体育场', group: 'B组', stage: 'group' },
-            { date: '2026-06-24', time: '00:00', homeTeam: '🇧🇦 波黑', awayTeam: '🇨🇿 捷克', venue: '洛杉矶玫瑰碗体育场', group: 'B组', stage: 'group' },
-
-            { date: '2026-06-25', time: '03:00', homeTeam: '🇪🇸 西班牙', awayTeam: '🇩🇪 德国', venue: '达拉斯AT&T体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-25', time: '03:00', homeTeam: '🇮🇷 伊朗', awayTeam: '🇩🇿 阿尔及利亚', venue: '亚特兰大梅赛德斯-奔驰体育场', group: 'C组', stage: 'group' },
-            { date: '2026-06-26', time: '06:00', homeTeam: '🇦🇷 阿根廷', awayTeam: '🇵🇹 葡萄牙', venue: '迈阿密硬石体育场', group: 'D组', stage: 'group' },
-            { date: '2026-06-26', time: '06:00', homeTeam: '🇬🇭 加纳', awayTeam: '🇸🇳 塞内加尔', venue: '纽约大都会人寿体育场', group: 'D组', stage: 'group' },
-
-            // 1/8决赛 - 6月27-30日
-            { date: '2026-06-27', time: '21:00', homeTeam: 'A组第一', awayTeam: 'B组第二', venue: '洛杉矶玫瑰碗体育场', group: '1/8决赛 1', stage: 'round16' },
-            { date: '2026-06-28', time: '00:00', homeTeam: 'C组第一', awayTeam: 'D组第二', venue: '达拉斯AT&T体育场', group: '1/8决赛 2', stage: 'round16' },
-            { date: '2026-06-28', time: '21:00', homeTeam: 'B组第一', awayTeam: 'A组第二', venue: '费城林肯金融球场', group: '1/8决赛 3', stage: 'round16' },
-            { date: '2026-06-29', time: '00:00', homeTeam: 'D组第一', awayTeam: 'C组第二', venue: '纽约大都会人寿体育场', group: '1/8决赛 4', stage: 'round16' },
-            { date: '2026-06-29', time: '21:00', homeTeam: 'E组第一', awayTeam: 'F组第二', venue: '迈阿密硬石体育场', group: '1/8决赛 5', stage: 'round16' },
-            { date: '2026-06-30', time: '00:00', homeTeam: 'G组第一', awayTeam: 'H组第二', venue: '堪萨斯城箭头体育场', group: '1/8决赛 6', stage: 'round16' },
-            { date: '2026-06-30', time: '21:00', homeTeam: 'F组第一', awayTeam: 'E组第二', venue: '旧金山李维斯体育场', group: '1/8决赛 7', stage: 'round16' },
-            { date: '2026-07-01', time: '00:00', homeTeam: 'H组第一', awayTeam: 'G组第二', venue: '西雅图流明球场', group: '1/8决赛 8', stage: 'round16' },
-
-            // 1/4决赛 - 7月3-4日
-            { date: '2026-07-03', time: '21:00', homeTeam: '1/8决赛1胜者', awayTeam: '1/8决赛2胜者', venue: '波士顿吉列体育场', group: '1/4决赛 1', stage: 'quarter' },
-            { date: '2026-07-04', time: '00:00', homeTeam: '1/8决赛5胜者', awayTeam: '1/8决赛6胜者', venue: '亚特兰大梅赛德斯-奔驰体育场', group: '1/4决赛 2', stage: 'quarter' },
-            { date: '2026-07-04', time: '21:00', homeTeam: '1/8决赛3胜者', awayTeam: '1/8决赛4胜者', venue: '丹佛埃姆波利球场', group: '1/4决赛 3', stage: 'quarter' },
-            { date: '2026-07-05', time: '00:00', homeTeam: '1/8决赛7胜者', awayTeam: '1/8决赛8胜者', venue: '洛杉矶玫瑰碗体育场', group: '1/4决赛 4', stage: 'quarter' },
-
-            // 半决赛 - 7月7-8日
-            { date: '2026-07-07', time: '03:00', homeTeam: '1/4决赛1胜者', awayTeam: '1/4决赛2胜者', venue: '达拉斯AT&T体育场', group: '半决赛 1', stage: 'semi' },
-            { date: '2026-07-08', time: '03:00', homeTeam: '1/4决赛3胜者', awayTeam: '1/4决赛4胜者', venue: '亚特兰大梅赛德斯-奔驰体育场', group: '半决赛 2', stage: 'semi' },
-
-            // 三四名决赛 - 7月10日
-            { date: '2026-07-10', time: '21:00', homeTeam: '半决赛负者1', awayTeam: '半决赛负者2', venue: '迈阿密硬石体育场', group: '三四名决赛', stage: 'final' },
-
-            // 决赛 - 7月13日
-            { date: '2026-07-13', time: '03:00', homeTeam: '半决赛胜者1', awayTeam: '半决赛胜者2', venue: '纽约大都会人寿体育场', group: '决赛', stage: 'final' }
-        ];
+const scheduleData = [
+    {
+        "date": "2026-06-11",
+        "time": "03:00",
+        "homeTeam": "🇲🇽 Mexico",
+        "awayTeam": "🇿🇦 South Africa",
+        "venue": "Mexico City",
+        "group": "Group A",
+        "stage": "group",
+        "score": "2-0"
+    },
+    {
+        "date": "2026-06-11",
+        "time": "10:00",
+        "homeTeam": "🇰🇷 South Korea",
+        "awayTeam": "🇨🇿 Czech Republic",
+        "venue": "Guadalajara (Zapopan)",
+        "group": "Group A",
+        "stage": "group",
+        "score": "2-1"
+    },
+    {
+        "date": "2026-06-18",
+        "time": "00:00",
+        "homeTeam": "🇨🇿 Czech Republic",
+        "awayTeam": "🇿🇦 South Africa",
+        "venue": "Atlanta",
+        "group": "Group A",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-18",
+        "time": "09:00",
+        "homeTeam": "🇲🇽 Mexico",
+        "awayTeam": "🇰🇷 South Korea",
+        "venue": "Guadalajara (Zapopan)",
+        "group": "Group A",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "09:00",
+        "homeTeam": "🇨🇿 Czech Republic",
+        "awayTeam": "🇲🇽 Mexico",
+        "venue": "Mexico City",
+        "group": "Group A",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "09:00",
+        "homeTeam": "🇿🇦 South Africa",
+        "awayTeam": "🇰🇷 South Korea",
+        "venue": "Monterrey (Guadalupe)",
+        "group": "Group A",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-12",
+        "time": "03:00",
+        "homeTeam": "🇨🇦 Canada",
+        "awayTeam": "🇧🇦 Bosnia & Herzegovina",
+        "venue": "Toronto",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-13",
+        "time": "03:00",
+        "homeTeam": "🇶🇦 Qatar",
+        "awayTeam": "🇨🇭 Switzerland",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-18",
+        "time": "03:00",
+        "homeTeam": "🇨🇭 Switzerland",
+        "awayTeam": "🇧🇦 Bosnia & Herzegovina",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-18",
+        "time": "06:00",
+        "homeTeam": "🇨🇦 Canada",
+        "awayTeam": "🇶🇦 Qatar",
+        "venue": "Vancouver",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "03:00",
+        "homeTeam": "🇨🇭 Switzerland",
+        "awayTeam": "🇨🇦 Canada",
+        "venue": "Vancouver",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "03:00",
+        "homeTeam": "🇧🇦 Bosnia & Herzegovina",
+        "awayTeam": "🇶🇦 Qatar",
+        "venue": "Seattle",
+        "group": "Group B",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-13",
+        "time": "06:00",
+        "homeTeam": "🇧🇷 Brazil",
+        "awayTeam": "🇲🇦 Morocco",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-13",
+        "time": "09:00",
+        "homeTeam": "🇭🇹 Haiti",
+        "awayTeam": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland",
+        "venue": "Boston (Foxborough)",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-19",
+        "time": "06:00",
+        "homeTeam": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland",
+        "awayTeam": "🇲🇦 Morocco",
+        "venue": "Boston (Foxborough)",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-19",
+        "time": "08:30",
+        "homeTeam": "🇧🇷 Brazil",
+        "awayTeam": "🇭🇹 Haiti",
+        "venue": "Philadelphia",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "06:00",
+        "homeTeam": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland",
+        "awayTeam": "🇧🇷 Brazil",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-24",
+        "time": "06:00",
+        "homeTeam": "🇲🇦 Morocco",
+        "awayTeam": "🇭🇹 Haiti",
+        "venue": "Atlanta",
+        "group": "Group C",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-12",
+        "time": "09:00",
+        "homeTeam": "🇺🇸 USA",
+        "awayTeam": "🇵🇾 Paraguay",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-13",
+        "time": "12:00",
+        "homeTeam": "🇦🇺 Australia",
+        "awayTeam": "🇹🇷 Turkey",
+        "venue": "Vancouver",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-19",
+        "time": "03:00",
+        "homeTeam": "🇺🇸 USA",
+        "awayTeam": "🇦🇺 Australia",
+        "venue": "Seattle",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-19",
+        "time": "11:00",
+        "homeTeam": "🇹🇷 Turkey",
+        "awayTeam": "🇵🇾 Paraguay",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "10:00",
+        "homeTeam": "🇹🇷 Turkey",
+        "awayTeam": "🇺🇸 USA",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "10:00",
+        "homeTeam": "🇵🇾 Paraguay",
+        "awayTeam": "🇦🇺 Australia",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Group D",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-14",
+        "time": "01:00",
+        "homeTeam": "🇩🇪 Germany",
+        "awayTeam": "🇨🇼 Curaçao",
+        "venue": "Houston",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-14",
+        "time": "07:00",
+        "homeTeam": "🇨🇮 Ivory Coast",
+        "awayTeam": "🇪🇨 Ecuador",
+        "venue": "Philadelphia",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-20",
+        "time": "04:00",
+        "homeTeam": "🇩🇪 Germany",
+        "awayTeam": "🇨🇮 Ivory Coast",
+        "venue": "Toronto",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-20",
+        "time": "08:00",
+        "homeTeam": "🇪🇨 Ecuador",
+        "awayTeam": "🇨🇼 Curaçao",
+        "venue": "Kansas City",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "04:00",
+        "homeTeam": "🇨🇼 Curaçao",
+        "awayTeam": "🇨🇮 Ivory Coast",
+        "venue": "Philadelphia",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "04:00",
+        "homeTeam": "🇪🇨 Ecuador",
+        "awayTeam": "🇩🇪 Germany",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Group E",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-14",
+        "time": "04:00",
+        "homeTeam": "🇳🇱 Netherlands",
+        "awayTeam": "🇯🇵 Japan",
+        "venue": "Dallas (Arlington)",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-14",
+        "time": "10:00",
+        "homeTeam": "🇸🇪 Sweden",
+        "awayTeam": "🇹🇳 Tunisia",
+        "venue": "Monterrey (Guadalupe)",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-20",
+        "time": "01:00",
+        "homeTeam": "🇳🇱 Netherlands",
+        "awayTeam": "🇸🇪 Sweden",
+        "venue": "Houston",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-20",
+        "time": "12:00",
+        "homeTeam": "🇹🇳 Tunisia",
+        "awayTeam": "🇯🇵 Japan",
+        "venue": "Monterrey (Guadalupe)",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "07:00",
+        "homeTeam": "🇯🇵 Japan",
+        "awayTeam": "🇸🇪 Sweden",
+        "venue": "Dallas (Arlington)",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-25",
+        "time": "07:00",
+        "homeTeam": "🇹🇳 Tunisia",
+        "awayTeam": "🇳🇱 Netherlands",
+        "venue": "Kansas City",
+        "group": "Group F",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-15",
+        "time": "03:00",
+        "homeTeam": "🇧🇪 Belgium",
+        "awayTeam": "🇪🇬 Egypt",
+        "venue": "Seattle",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-15",
+        "time": "09:00",
+        "homeTeam": "🇮🇷 Iran",
+        "awayTeam": "🇳🇿 New Zealand",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-21",
+        "time": "03:00",
+        "homeTeam": "🇧🇪 Belgium",
+        "awayTeam": "🇮🇷 Iran",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-21",
+        "time": "09:00",
+        "homeTeam": "🇳🇿 New Zealand",
+        "awayTeam": "🇪🇬 Egypt",
+        "venue": "Vancouver",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "11:00",
+        "homeTeam": "🇪🇬 Egypt",
+        "awayTeam": "🇮🇷 Iran",
+        "venue": "Seattle",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "11:00",
+        "homeTeam": "🇳🇿 New Zealand",
+        "awayTeam": "🇧🇪 Belgium",
+        "venue": "Vancouver",
+        "group": "Group G",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-15",
+        "time": "00:00",
+        "homeTeam": "🇪🇸 Spain",
+        "awayTeam": "🇨🇻 Cape Verde",
+        "venue": "Atlanta",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-15",
+        "time": "06:00",
+        "homeTeam": "🇸🇦 Saudi Arabia",
+        "awayTeam": "🇺🇾 Uruguay",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-21",
+        "time": "00:00",
+        "homeTeam": "🇪🇸 Spain",
+        "awayTeam": "🇸🇦 Saudi Arabia",
+        "venue": "Atlanta",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-21",
+        "time": "06:00",
+        "homeTeam": "🇺🇾 Uruguay",
+        "awayTeam": "🇨🇻 Cape Verde",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "08:00",
+        "homeTeam": "🇨🇻 Cape Verde",
+        "awayTeam": "🇸🇦 Saudi Arabia",
+        "venue": "Houston",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "08:00",
+        "homeTeam": "🇺🇾 Uruguay",
+        "awayTeam": "🇪🇸 Spain",
+        "venue": "Guadalajara (Zapopan)",
+        "group": "Group H",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-16",
+        "time": "03:00",
+        "homeTeam": "🇫🇷 France",
+        "awayTeam": "🇸🇳 Senegal",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-16",
+        "time": "06:00",
+        "homeTeam": "🇮🇶 Iraq",
+        "awayTeam": "🇳🇴 Norway",
+        "venue": "Boston (Foxborough)",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-22",
+        "time": "05:00",
+        "homeTeam": "🇫🇷 France",
+        "awayTeam": "🇮🇶 Iraq",
+        "venue": "Philadelphia",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-22",
+        "time": "08:00",
+        "homeTeam": "🇳🇴 Norway",
+        "awayTeam": "🇸🇳 Senegal",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "03:00",
+        "homeTeam": "🇳🇴 Norway",
+        "awayTeam": "🇫🇷 France",
+        "venue": "Boston (Foxborough)",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-26",
+        "time": "03:00",
+        "homeTeam": "🇸🇳 Senegal",
+        "awayTeam": "🇮🇶 Iraq",
+        "venue": "Toronto",
+        "group": "Group I",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-16",
+        "time": "09:00",
+        "homeTeam": "🇦🇷 Argentina",
+        "awayTeam": "🇩🇿 Algeria",
+        "venue": "Kansas City",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-16",
+        "time": "12:00",
+        "homeTeam": "🇦🇹 Austria",
+        "awayTeam": "🇯🇴 Jordan",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-22",
+        "time": "01:00",
+        "homeTeam": "🇦🇷 Argentina",
+        "awayTeam": "🇦🇹 Austria",
+        "venue": "Dallas (Arlington)",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-22",
+        "time": "11:00",
+        "homeTeam": "🇯🇴 Jordan",
+        "awayTeam": "🇩🇿 Algeria",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "10:00",
+        "homeTeam": "🇩🇿 Algeria",
+        "awayTeam": "🇦🇹 Austria",
+        "venue": "Kansas City",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "10:00",
+        "homeTeam": "🇯🇴 Jordan",
+        "awayTeam": "🇦🇷 Argentina",
+        "venue": "Dallas (Arlington)",
+        "group": "Group J",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-17",
+        "time": "01:00",
+        "homeTeam": "🇵🇹 Portugal",
+        "awayTeam": "🇨🇩 DR Congo",
+        "venue": "Houston",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-17",
+        "time": "10:00",
+        "homeTeam": "🇺🇿 Uzbekistan",
+        "awayTeam": "🇨🇴 Colombia",
+        "venue": "Mexico City",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-23",
+        "time": "01:00",
+        "homeTeam": "🇵🇹 Portugal",
+        "awayTeam": "🇺🇿 Uzbekistan",
+        "venue": "Houston",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-23",
+        "time": "10:00",
+        "homeTeam": "🇨🇴 Colombia",
+        "awayTeam": "🇨🇩 DR Congo",
+        "venue": "Guadalajara (Zapopan)",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "07:30",
+        "homeTeam": "🇨🇴 Colombia",
+        "awayTeam": "🇵🇹 Portugal",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "07:30",
+        "homeTeam": "🇨🇩 DR Congo",
+        "awayTeam": "🇺🇿 Uzbekistan",
+        "venue": "Atlanta",
+        "group": "Group K",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-17",
+        "time": "04:00",
+        "homeTeam": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England",
+        "awayTeam": "🇭🇷 Croatia",
+        "venue": "Dallas (Arlington)",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-17",
+        "time": "07:00",
+        "homeTeam": "🇬🇭 Ghana",
+        "awayTeam": "🇵🇦 Panama",
+        "venue": "Toronto",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-23",
+        "time": "04:00",
+        "homeTeam": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England",
+        "awayTeam": "🇬🇭 Ghana",
+        "venue": "Boston (Foxborough)",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-23",
+        "time": "07:00",
+        "homeTeam": "🇵🇦 Panama",
+        "awayTeam": "🇭🇷 Croatia",
+        "venue": "Toronto",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "05:00",
+        "homeTeam": "🇵🇦 Panama",
+        "awayTeam": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-27",
+        "time": "05:00",
+        "homeTeam": "🇭🇷 Croatia",
+        "awayTeam": "🇬🇭 Ghana",
+        "venue": "Philadelphia",
+        "group": "Group L",
+        "stage": "group",
+        "score": null
+    },
+    {
+        "date": "2026-06-28",
+        "time": "03:00",
+        "homeTeam": "2A",
+        "awayTeam": "2B",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-29",
+        "time": "04:30",
+        "homeTeam": "1E",
+        "awayTeam": "3A/B/C/D/F",
+        "venue": "Boston (Foxborough)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-29",
+        "time": "09:00",
+        "homeTeam": "1F",
+        "awayTeam": "2C",
+        "venue": "Monterrey (Guadalupe)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-29",
+        "time": "01:00",
+        "homeTeam": "1C",
+        "awayTeam": "2F",
+        "venue": "Houston",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-30",
+        "time": "05:00",
+        "homeTeam": "1I",
+        "awayTeam": "3C/D/F/G/H",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-30",
+        "time": "01:00",
+        "homeTeam": "2E",
+        "awayTeam": "2I",
+        "venue": "Dallas (Arlington)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-06-30",
+        "time": "09:00",
+        "homeTeam": "1A",
+        "awayTeam": "3C/E/F/H/I",
+        "venue": "Mexico City",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-01",
+        "time": "00:00",
+        "homeTeam": "1L",
+        "awayTeam": "3E/H/I/J/K",
+        "venue": "Atlanta",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-01",
+        "time": "08:00",
+        "homeTeam": "1D",
+        "awayTeam": "3B/E/F/I/J",
+        "venue": "San Francisco Bay Area (Santa Clara)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-01",
+        "time": "04:00",
+        "homeTeam": "1G",
+        "awayTeam": "3A/E/H/I/J",
+        "venue": "Seattle",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-02",
+        "time": "07:00",
+        "homeTeam": "2K",
+        "awayTeam": "2L",
+        "venue": "Toronto",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-02",
+        "time": "03:00",
+        "homeTeam": "1H",
+        "awayTeam": "2J",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-02",
+        "time": "11:00",
+        "homeTeam": "1B",
+        "awayTeam": "3E/F/G/I/J",
+        "venue": "Vancouver",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-03",
+        "time": "06:00",
+        "homeTeam": "1J",
+        "awayTeam": "2H",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-03",
+        "time": "09:30",
+        "homeTeam": "1K",
+        "awayTeam": "3D/E/I/J/L",
+        "venue": "Kansas City",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-03",
+        "time": "02:00",
+        "homeTeam": "2D",
+        "awayTeam": "2G",
+        "venue": "Dallas (Arlington)",
+        "group": "Round of 32",
+        "stage": "round32",
+        "score": null
+    },
+    {
+        "date": "2026-07-04",
+        "time": "05:00",
+        "homeTeam": "W74",
+        "awayTeam": "W77",
+        "venue": "Philadelphia",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-04",
+        "time": "01:00",
+        "homeTeam": "W73",
+        "awayTeam": "W75",
+        "venue": "Houston",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-05",
+        "time": "04:00",
+        "homeTeam": "W76",
+        "awayTeam": "W78",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-05",
+        "time": "08:00",
+        "homeTeam": "W79",
+        "awayTeam": "W80",
+        "venue": "Mexico City",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-06",
+        "time": "03:00",
+        "homeTeam": "W83",
+        "awayTeam": "W84",
+        "venue": "Dallas (Arlington)",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-06",
+        "time": "08:00",
+        "homeTeam": "W81",
+        "awayTeam": "W82",
+        "venue": "Seattle",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-07",
+        "time": "00:00",
+        "homeTeam": "W86",
+        "awayTeam": "W88",
+        "venue": "Atlanta",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-07",
+        "time": "04:00",
+        "homeTeam": "W85",
+        "awayTeam": "W87",
+        "venue": "Vancouver",
+        "group": "Round of 16",
+        "stage": "round16",
+        "score": null
+    },
+    {
+        "date": "2026-07-09",
+        "time": "04:00",
+        "homeTeam": "W89",
+        "awayTeam": "W90",
+        "venue": "Boston (Foxborough)",
+        "group": "Quarter-final",
+        "stage": "quarter",
+        "score": null
+    },
+    {
+        "date": "2026-07-10",
+        "time": "03:00",
+        "homeTeam": "W93",
+        "awayTeam": "W94",
+        "venue": "Los Angeles (Inglewood)",
+        "group": "Quarter-final",
+        "stage": "quarter",
+        "score": null
+    },
+    {
+        "date": "2026-07-11",
+        "time": "05:00",
+        "homeTeam": "W91",
+        "awayTeam": "W92",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Quarter-final",
+        "stage": "quarter",
+        "score": null
+    },
+    {
+        "date": "2026-07-11",
+        "time": "09:00",
+        "homeTeam": "W95",
+        "awayTeam": "W96",
+        "venue": "Kansas City",
+        "group": "Quarter-final",
+        "stage": "quarter",
+        "score": null
+    },
+    {
+        "date": "2026-07-14",
+        "time": "03:00",
+        "homeTeam": "W97",
+        "awayTeam": "W98",
+        "venue": "Dallas (Arlington)",
+        "group": "Semi-final",
+        "stage": "semi",
+        "score": null
+    },
+    {
+        "date": "2026-07-15",
+        "time": "03:00",
+        "homeTeam": "W99",
+        "awayTeam": "W100",
+        "venue": "Atlanta",
+        "group": "Semi-final",
+        "stage": "semi",
+        "score": null
+    },
+    {
+        "date": "2026-07-18",
+        "time": "05:00",
+        "homeTeam": "L101",
+        "awayTeam": "L102",
+        "venue": "Miami (Miami Gardens)",
+        "group": "Match for third place",
+        "stage": "third",
+        "score": null
+    },
+    {
+        "date": "2026-07-19",
+        "time": "03:00",
+        "homeTeam": "W101",
+        "awayTeam": "W102",
+        "venue": "New York/New Jersey (East Rutherford)",
+        "group": "Final",
+        "stage": "final",
+        "score": null
+    }
+];
 
         // 视图切换函数
         function switchView(view) {
@@ -13816,12 +14797,17 @@
                 html += `<div class="schedule-matches">`;
 
                 matchesByDate[date].forEach(match => {
+                    const scoreOrVs = match.score
+                        ? `<span class="schedule-match-score">${match.score}</span>`
+                        : `<span class="schedule-match-vs">VS</span>`;
+                    const cardClass = match.score ? 'schedule-match-card schedule-match-finished' : 'schedule-match-card';
+
                     html += `
-                        <div class="schedule-match-card">
+                        <div class="${cardClass}">
                             <div class="schedule-match-time">⏰ 北京时间 ${match.time}</div>
                             <div class="schedule-match-teams">
                                 ${match.homeTeam}
-                                <span class="schedule-match-vs">VS</span>
+                                ${scoreOrVs}
                                 ${match.awayTeam}
                             </div>
                             <div class="schedule-match-info">
