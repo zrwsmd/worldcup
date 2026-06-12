@@ -10245,6 +10245,46 @@
             'Indonesia': '🇮🇩', 'Saudi Arabia': '🇸🇦', 'Iraq': '🇮🇶', 'Oman': '🇴🇲',
         };
 
+        // 国家名称中文映射
+        const TEAM_NAMES_CN = {
+            'Mexico': '墨西哥', 'South Africa': '南非', 'South Korea': '韩国', 'Czech Republic': '捷克',
+            'Canada': '加拿大', 'Bosnia & Herzegovina': '波黑', 'USA': '美国', 'Paraguay': '巴拉圭',
+            'Qatar': '卡塔尔', 'Switzerland': '瑞士', 'Brazil': '巴西', 'Morocco': '摩洛哥',
+            'Haiti': '海地', 'Scotland': '苏格兰', 'Australia': '澳大利亚', 'Turkey': '土耳其',
+            'Germany': '德国', 'Curaçao': '库拉索', 'Ivory Coast': '科特迪瓦', 'Ecuador': '厄瓜多尔',
+            'Netherlands': '荷兰', 'Japan': '日本', 'Sweden': '瑞典', 'Tunisia': '突尼斯',
+            'Belgium': '比利时', 'Egypt': '埃及', 'Iran': '伊朗', 'New Zealand': '新西兰',
+            'Spain': '西班牙', 'Cape Verde': '佛得角', 'Saudi Arabia': '沙特阿拉伯', 'Uruguay': '乌拉圭',
+            'France': '法国', 'Senegal': '塞内加尔', 'Norway': '挪威',
+            'Argentina': '阿根廷', 'Algeria': '阿尔及利亚', 'Austria': '奥地利', 'Jordan': '约旦',
+            'Portugal': '葡萄牙', 'Colombia': '哥伦比亚', 'Uzbekistan': '乌兹别克斯坦',
+            'England': '英格兰', 'Croatia': '克罗地亚', 'Ghana': '加纳', 'Panama': '巴拿马',
+            'Serbia': '塞尔维亚', 'Ukraine': '乌克兰', 'Poland': '波兰', 'Romania': '罗马尼亚',
+            'Chile': '智利', 'Venezuela': '委内瑞拉', 'Honduras': '洪都拉斯', 'Costa Rica': '哥斯达黎加',
+            'Cameroon': '喀麦隆', 'Nigeria': '尼日利亚', 'Mali': '马里', 'Congo DR': '刚果(金)',
+            'Indonesia': '印度尼西亚', 'Iraq': '伊拉克', 'Oman': '阿曼',
+        };
+
+        // 场馆名称中文映射
+        const VENUE_NAMES_CN = {
+            'Toronto': '多伦多',
+            'Los Angeles (Inglewood)': '洛杉矶(英格尔伍德)',
+            'Mexico City': '墨西哥城',
+            'Vancouver': '温哥华',
+            'Seattle': '西雅图',
+            'San Francisco': '旧金山',
+            'Kansas City': '堪萨斯城',
+            'Dallas': '达拉斯',
+            'Houston': '休斯顿',
+            'Atlanta': '亚特兰大',
+            'Miami': '迈阿密',
+            'Philadelphia': '费城',
+            'New York': '纽约',
+            'Boston': '波士顿',
+            'Monterrey': '蒙特雷',
+            'Guadalajara': '瓜达拉哈拉',
+        };
+
         // UTC时差偏移字符串 -> 数字小时
         function parseUTCOffset(timeStr) {
             // e.g. "13:00 UTC-6" -> offset = -6
@@ -10290,14 +10330,17 @@
                 return todayMatches.map(m => {
                     const flag1 = TEAM_FLAGS[m.team1] || '';
                     const flag2 = TEAM_FLAGS[m.team2] || '';
+                    const teamName1 = TEAM_NAMES_CN[m.team1] || m.team1;
+                    const teamName2 = TEAM_NAMES_CN[m.team2] || m.team2;
+                    const venueName = VENUE_NAMES_CN[m.ground] || m.ground || '待定';
                     const score = (m.score1 != null && m.score2 != null)
                         ? ` ${m.score1} - ${m.score2} ` : ' VS ';
                     return {
-                        homeTeam: `${flag1} ${m.team1}`,
-                        awayTeam: `${flag2} ${m.team2}`,
+                        homeTeam: `${flag1} ${teamName1}`,
+                        awayTeam: `${flag2} ${teamName2}`,
                         score: score,
                         time: convertToBeiJing(m.date, m.time),
-                        venue: m.ground || '待定',
+                        venue: venueName,
                         group: m.group || m.round || '淘汰赛',
                         finished: !!m.finished,
                     };
