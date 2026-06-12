@@ -445,6 +445,126 @@
             margin-top: 10px;
         }
 
+        .substitutes-section {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 900px;
+            border: 2px solid rgba(255, 215, 0, 0.25);
+        }
+
+        .substitutes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .substitutes-header:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .substitutes-title {
+            font-size: 1.5em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .substitutes-toggle {
+            font-size: 1.5em;
+            color: #ffd700;
+            transition: transform 0.3s;
+        }
+
+        .substitutes-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .substitutes-content {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+
+        .substitutes-content.expanded {
+            max-height: 2000px;
+        }
+
+        .substitute-card {
+            background: linear-gradient(135deg, rgba(50, 50, 50, 0.7), rgba(30, 30, 30, 0.5));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 12px;
+            padding: 12px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .substitute-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            border-color: #ffd700;
+        }
+
+        .substitute-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            background: linear-gradient(135deg, #888, #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .substitute-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .substitute-number {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 3px;
+        }
+
+        .substitute-name {
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+
+        .substitute-name-en {
+            font-size: 0.7em;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 3px;
+        }
+
+        .substitute-position {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
         .team-info {
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
@@ -1265,6 +1385,148 @@
                             intro: '速度极快的边锋，拥有出色的爆发力和过人能力。在2024年欧洲杯决赛中打入关键进球，帮助西班牙夺冠。',
                             skills: ['速度', '突破', '过人', '射门', '体能'],
                             career: { caps: 28, goals: 5, assists: 8 }
+                        }
+                    ]
+                },
+                substitutes: {
+                    gk: [
+                        {
+                            num: 13,
+                            name: 'David Raya',
+                            nameCN: '拉亚',
+                            club: '阿森纳',
+                            age: 29,
+                            position: '门将',
+                            height: '183cm',
+                            intro: '阿森纳主力门将，扑救反应出色，脚下技术好。',
+                            skills: ['扑救', '反应', '脚下技术'],
+                            career: { caps: 18, goals: 0, assists: 0 }
+                        },
+                        {
+                            num: 23,
+                            name: 'Álex Remiro',
+                            nameCN: '雷米罗',
+                            club: '皇家社会',
+                            age: 29,
+                            position: '门将',
+                            height: '191cm',
+                            intro: '皇家社会门将，身材高大，站位感好。',
+                            skills: ['扑救', '高空球', '站位'],
+                            career: { caps: 5, goals: 0, assists: 0 }
+                        }
+                    ],
+                    def: [
+                        {
+                            num: 14,
+                            name: 'Marcos Llorente',
+                            nameCN: '略伦特',
+                            club: '马德里竞技',
+                            age: 29,
+                            position: '右后卫/中场',
+                            height: '184cm',
+                            intro: '多面手球员，能踢后卫和中场，速度快，冲击力强。',
+                            skills: ['速度', '冲击', '防守', '助攻'],
+                            career: { caps: 17, goals: 1, assists: 3 }
+                        },
+                        {
+                            num: 5,
+                            name: 'Dani Vivian',
+                            nameCN: '维维安',
+                            club: '毕尔巴鄂竞技',
+                            age: 25,
+                            position: '中后卫',
+                            height: '188cm',
+                            intro: '年轻中卫，防守凶悍，身体对抗强。',
+                            skills: ['防守', '对抗', '头球'],
+                            career: { caps: 6, goals: 0, assists: 0 }
+                        },
+                        {
+                            num: 17,
+                            name: 'Marc Cucurella',
+                            nameCN: '库库雷利亚',
+                            club: '切尔西',
+                            age: 26,
+                            position: '左后卫',
+                            height: '172cm',
+                            intro: '技术型左后卫，传控能力强，助攻活跃。',
+                            skills: ['传控', '助攻', '防守'],
+                            career: { caps: 14, goals: 0, assists: 2 }
+                        }
+                    ],
+                    mid: [
+                        {
+                            num: 10,
+                            name: 'Dani Olmo',
+                            nameCN: '奥尔莫',
+                            club: '巴塞罗那',
+                            age: 26,
+                            position: '攻击型中场',
+                            height: '179cm',
+                            intro: '技术全面的攻击型中场，进攻组织和终结能力都很强。',
+                            skills: ['传球', '射门', '盘带', '创造力'],
+                            career: { caps: 42, goals: 10, assists: 7 }
+                        },
+                        {
+                            num: 20,
+                            name: 'Martín Zubimendi',
+                            nameCN: '祖比门迪',
+                            club: '皇家社会',
+                            age: 25,
+                            position: '后腰',
+                            height: '182cm',
+                            intro: '防守型中场，拦截能力强，传球稳健。',
+                            skills: ['拦截', '传球', '防守'],
+                            career: { caps: 12, goals: 0, assists: 1 }
+                        },
+                        {
+                            num: 18,
+                            name: 'Fabián Ruiz',
+                            nameCN: '法比安',
+                            club: '巴黎圣日耳曼',
+                            age: 28,
+                            position: '中前卫',
+                            height: '189cm',
+                            intro: '全能型中场，传球视野好，远射能力强。',
+                            skills: ['传球', '远射', '控球'],
+                            career: { caps: 36, goals: 4, assists: 5 }
+                        }
+                    ],
+                    fwd: [
+                        {
+                            num: 11,
+                            name: 'Ferran Torres',
+                            nameCN: '费兰·托雷斯',
+                            club: '巴塞罗那',
+                            age: 24,
+                            position: '边锋/中锋',
+                            height: '184cm',
+                            intro: '速度快的多面手前锋，能踢多个进攻位置。',
+                            skills: ['速度', '跑位', '射门'],
+                            career: { caps: 48, goals: 20, assists: 8 }
+                        },
+                        {
+                            num: 22,
+                            name: 'Mikel Oyarzabal',
+                            nameCN: '奥亚萨瓦尔',
+                            club: '皇家社会',
+                            age: 27,
+                            position: '左边锋',
+                            height: '181cm',
+                            intro: '技术细腻的边锋，传球和射门都很出色。',
+                            skills: ['技术', '传球', '射门'],
+                            career: { caps: 34, goals: 8, assists: 6 }
+                        },
+                        {
+                            num: 15,
+                            name: 'Joselu',
+                            nameCN: '约瑟卢',
+                            club: '利雅得胜利',
+                            age: 34,
+                            position: '中锋',
+                            height: '192cm',
+                            intro: '高中锋，抢点和头球能力强，经验丰富。',
+                            skills: ['头球', '抢点', '支点'],
+                            career: { caps: 11, goals: 5, assists: 1 }
                         }
                     ]
                 },
@@ -10318,6 +10580,53 @@
                     </div>
                 </div>
 
+                ${team.substitutes ? `
+                <div class="substitutes-section">
+                    <div class="substitutes-header" onclick="toggleSubstitutes(this)">
+                        <div class="substitutes-title">🔄 替补球员 (${(team.substitutes.gk?.length || 0) + (team.substitutes.def?.length || 0) + (team.substitutes.mid?.length || 0) + (team.substitutes.fwd?.length || 0)}人)</div>
+                        <div class="substitutes-toggle">▼</div>
+                    </div>
+                    <div class="substitutes-content">
+                        ${team.substitutes.gk ? team.substitutes.gk.map((p, idx) => `
+                            <div class="substitute-card" data-team="${teamKey}" data-sub-position="gk" data-sub-index="${idx}">
+                                <div class="substitute-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#888,#666)';this.style.display='none'"></div>
+                                <div class="substitute-number">${p.num}</div>
+                                <div class="substitute-name">${p.nameCN}</div>
+                                <div class="substitute-name-en">${p.name}</div>
+                                <div class="substitute-position">门将</div>
+                            </div>
+                        `).join('') : ''}
+                        ${team.substitutes.def ? team.substitutes.def.map((p, idx) => `
+                            <div class="substitute-card" data-team="${teamKey}" data-sub-position="def" data-sub-index="${idx}">
+                                <div class="substitute-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#888,#666)';this.style.display='none'"></div>
+                                <div class="substitute-number">${p.num}</div>
+                                <div class="substitute-name">${p.nameCN}</div>
+                                <div class="substitute-name-en">${p.name}</div>
+                                <div class="substitute-position">后卫</div>
+                            </div>
+                        `).join('') : ''}
+                        ${team.substitutes.mid ? team.substitutes.mid.map((p, idx) => `
+                            <div class="substitute-card" data-team="${teamKey}" data-sub-position="mid" data-sub-index="${idx}">
+                                <div class="substitute-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#888,#666)';this.style.display='none'"></div>
+                                <div class="substitute-number">${p.num}</div>
+                                <div class="substitute-name">${p.nameCN}</div>
+                                <div class="substitute-name-en">${p.name}</div>
+                                <div class="substitute-position">中场</div>
+                            </div>
+                        `).join('') : ''}
+                        ${team.substitutes.fwd ? team.substitutes.fwd.map((p, idx) => `
+                            <div class="substitute-card" data-team="${teamKey}" data-sub-position="fwd" data-sub-index="${idx}">
+                                <div class="substitute-avatar"><img src="" data-player="${p.name}" alt="${p.nameCN}" style="display:none" onerror="this.parentElement.style.background='linear-gradient(135deg,#888,#666)';this.style.display='none'"></div>
+                                <div class="substitute-number">${p.num}</div>
+                                <div class="substitute-name">${p.nameCN}</div>
+                                <div class="substitute-name-en">${p.name}</div>
+                                <div class="substitute-position">前锋</div>
+                            </div>
+                        `).join('') : ''}
+                    </div>
+                </div>
+                ` : ''}
+
                 <div class="team-info">
                     <h2 style="color: #ffd700; text-align: center; margin-bottom: 20px;">球队统计</h2>
                     <div class="team-stats">
@@ -10352,6 +10661,17 @@
                 });
             });
 
+            // 添加替补球员点击事件
+            document.querySelectorAll('.substitute-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const teamKey = this.getAttribute('data-team');
+                    const position = this.getAttribute('data-sub-position');
+                    const index = parseInt(this.getAttribute('data-sub-index'));
+                    const player = teams[teamKey].substitutes[position][index];
+                    openPlayerModal(player);
+                });
+            });
+
             // 添加主教练卡片点击事件
             document.querySelectorAll('.coach-card').forEach(card => {
                 card.addEventListener('click', function() {
@@ -10360,6 +10680,23 @@
                     openCoachModal(coach);
                 });
             });
+
+            // 加载球员和替补球员照片
+            loadPlayerPhotos();
+        }
+
+        // 折叠/展开替补区域
+        function toggleSubstitutes(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.substitutes-toggle');
+
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.classList.add('collapsed');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.remove('collapsed');
+            }
         }
 
         // Wikipedia article titles for each player
@@ -10376,6 +10713,17 @@
             'Lamine Yamal':      'Lamine_Yamal',
             'Álvaro Morata':     'Álvaro_Morata',
             'Nico Williams':     'Nico_Williams_(footballer)',
+            'David Raya':        'David_Raya',
+            'Álex Remiro':       'Álex_Remiro',
+            'Marcos Llorente':   'Marcos_Llorente',
+            'Dani Vivian':       'Dani_Vivian',
+            'Marc Cucurella':    'Marc_Cucurella',
+            'Dani Olmo':         'Dani_Olmo',
+            'Martín Zubimendi':  'Martín_Zubimendi',
+            'Fabián Ruiz':       'Fabián_Ruiz',
+            'Ferran Torres':     'Ferran_Torres',
+            'Mikel Oyarzabal':   'Mikel_Oyarzabal',
+            'Joselu':            'Joselu',
             // France
             'Mike Maignan':      'Mike_Maignan',
             'Jules Koundé':      'Jules_Koundé',
@@ -10554,24 +10902,29 @@
         }
 
         async function loadAvatars() {
-            const imgs = document.querySelectorAll('.player-avatar img[data-player]');
+            const imgs = document.querySelectorAll('.player-avatar img[data-player], .substitute-avatar img[data-player]');
             console.log(`🔄 开始加载 ${imgs.length} 个球员头像...`);
 
             // 逐个加载，每次请求间隔 300ms，避免 429 错误
             for (const img of imgs) {
                 const name = img.getAttribute('data-player');
                 const src = await fetchWikiImage(name);
+                const isSubstitute = img.parentElement.classList.contains('substitute-avatar');
+                const defaultGradient = isSubstitute ?
+                    'linear-gradient(135deg,#888,#666)' :
+                    'linear-gradient(135deg,#ffd700,#ffed4e)';
+
                 if (src) {
                     img.src = src;
                     img.style.display = '';
                     img.onload = () => img.parentElement.classList.add('loaded');
                     img.onerror = () => {
-                        img.parentElement.style.background = 'linear-gradient(135deg,#ffd700,#ffed4e)';
+                        img.parentElement.style.background = defaultGradient;
                         img.style.display = 'none';
                         img.parentElement.classList.add('loaded');
                     };
                 } else {
-                    img.parentElement.style.background = 'linear-gradient(135deg,#ffd700,#ffed4e)';
+                    img.parentElement.style.background = defaultGradient;
                     img.style.display = 'none';
                     img.parentElement.classList.add('loaded');
                 }
