@@ -10225,112 +10225,87 @@
         });
 
         // 从API获取今日比赛数据
+        // 国家名称 -> 旗帜emoji 映射（openfootball 用英文国家名）
+        const TEAM_FLAGS = {
+            'Mexico': '🇲🇽', 'South Africa': '🇿🇦', 'South Korea': '🇰🇷', 'Czech Republic': '🇨🇿',
+            'Canada': '🇨🇦', 'Bosnia & Herzegovina': '🇧🇦', 'USA': '🇺🇸', 'Paraguay': '🇵🇾',
+            'Qatar': '🇶🇦', 'Switzerland': '🇨🇭', 'Brazil': '🇧🇷', 'Morocco': '🇲🇦',
+            'Haiti': '🇭🇹', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Australia': '🇦🇺', 'Turkey': '🇹🇷',
+            'Germany': '🇩🇪', 'Curaçao': '🇨🇼', 'Ivory Coast': '🇨🇮', 'Ecuador': '🇪🇨',
+            'Netherlands': '🇳🇱', 'Japan': '🇯🇵', 'Sweden': '🇸🇪', 'Tunisia': '🇹🇳',
+            'Belgium': '🇧🇪', 'Egypt': '🇪🇬', 'Iran': '🇮🇷', 'New Zealand': '🇳🇿',
+            'Spain': '🇪🇸', 'Cape Verde': '🇨🇻', 'Saudi Arabia': '🇸🇦', 'Uruguay': '🇺🇾',
+            'France': '🇫🇷', 'Senegal': '🇸🇳', 'Norway': '🇳🇴',
+            'Argentina': '🇦🇷', 'Algeria': '🇩🇿', 'Austria': '🇦🇹', 'Jordan': '🇯🇴',
+            'Portugal': '🇵🇹', 'Colombia': '🇨🇴', 'Uzbekistan': '🇺🇿',
+            'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croatia': '🇭🇷', 'Ghana': '🇬🇭', 'Panama': '🇵🇦',
+            'Serbia': '🇷🇸', 'Ukraine': '🇺🇦', 'Poland': '🇵🇱', 'Romania': '🇷🇴',
+            'Chile': '🇨🇱', 'Venezuela': '🇻🇪', 'Honduras': '🇭🇳', 'Costa Rica': '🇨🇷',
+            'Cameroon': '🇨🇲', 'Nigeria': '🇳🇬', 'Mali': '🇲🇱', 'Congo DR': '🇨🇩',
+            'Indonesia': '🇮🇩', 'Saudi Arabia': '🇸🇦', 'Iraq': '🇮🇶', 'Oman': '🇴🇲',
+        };
+
+        // UTC时差偏移字符串 -> 数字小时
+        function parseUTCOffset(timeStr) {
+            // e.g. "13:00 UTC-6" -> offset = -6
+            const m = timeStr.match(/UTC([+-]\d+)/);
+            return m ? parseInt(m[1]) : 0;
+        }
+
+        // 将比赛时间转为北京时间（UTC+8）
+        function convertToBeiJing(dateStr, timeStr) {
+            if (!timeStr) return '时间待定';
+            try {
+                const timePart = timeStr.split(' ')[0]; // "13:00"
+                const [h, min] = timePart.split(':').map(Number);
+                const utcOffset = parseUTCOffset(timeStr);
+                // 转成UTC小时
+                const utcHour = h - utcOffset;
+                // 北京 = UTC+8
+                let bjHour = utcHour + 8;
+                // 处理跨天
+                let dayOffset = 0;
+                if (bjHour >= 24) { bjHour -= 24; dayOffset = 1; }
+                if (bjHour < 0)   { bjHour += 24; dayOffset = -1; }
+                return `北京时间 ${String(bjHour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+            } catch(e) {
+                return timeStr;
+            }
+        }
+
+        // 用 openfootball 公开 JSON 获取当日比赛（无需 API key）
         async function getTodayMatches() {
             try {
                 const today = new Date();
-                const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-                // 尝试从API获取数据（优先级顺序）
-                const apiEndpoints = [
-                    // API 1: WC2026 API
-                    `https://wc2026api.com/api/fixtures?date=${dateStr}`,
-                    // API 2: BallDontLie FIFA API
-                    `https://fifa.balldontlie.io/v1/matches?date=${dateStr}`,
-                    // API 3: Zafronix API
-                    `https://api.zafronix.com/fifa/worldcup/v1/matches?date=${dateStr}`
-                ];
+                const url = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('fetch failed');
+                const data = await resp.json();
 
-                for (const endpoint of apiEndpoints) {
-                    try {
-                        const response = await fetch(endpoint);
-                        if (response.ok) {
-                            const data = await response.json();
-                            return parseMatchData(data, endpoint);
-                        }
-                    } catch (err) {
-                        console.log(`Failed to fetch from ${endpoint}:`, err);
-                        continue;
-                    }
-                }
+                const allMatches = data.matches || [];
+                const todayMatches = allMatches.filter(m => m.date === dateStr);
 
-                // 如果所有API都失败，返回空数组
-                console.warn('All API endpoints failed, no matches to display');
-                return [];
-            } catch (error) {
-                console.error('Error fetching today matches:', error);
+                return todayMatches.map(m => {
+                    const flag1 = TEAM_FLAGS[m.team1] || '';
+                    const flag2 = TEAM_FLAGS[m.team2] || '';
+                    const score = (m.score1 != null && m.score2 != null)
+                        ? ` ${m.score1} - ${m.score2} ` : ' VS ';
+                    return {
+                        homeTeam: `${flag1} ${m.team1}`,
+                        awayTeam: `${flag2} ${m.team2}`,
+                        score: score,
+                        time: convertToBeiJing(m.date, m.time),
+                        venue: m.ground || '待定',
+                        group: m.group || m.round || '淘汰赛',
+                        finished: !!m.finished,
+                    };
+                });
+            } catch(e) {
+                console.error('赛程获取失败:', e);
                 return [];
             }
-        }
-
-        // 解析不同API返回的数据格式
-        function parseMatchData(data, endpoint) {
-            const matches = [];
-
-            try {
-                // 根据不同的API格式解析数据
-                if (endpoint.includes('wc2026api.com')) {
-                    // WC2026 API 格式
-                    (data.fixtures || data.matches || []).forEach(match => {
-                        matches.push({
-                            homeTeam: `${match.home_team_flag || ''} ${match.home_team}`,
-                            awayTeam: `${match.away_team_flag || ''} ${match.away_team}`,
-                            time: formatTime(match.datetime || match.kickoff_time),
-                            venue: match.venue || match.stadium || '待定',
-                            group: match.group ? `${match.group}小组赛` : '小组赛'
-                        });
-                    });
-                } else if (endpoint.includes('balldontlie.io')) {
-                    // BallDontLie API 格式
-                    (data.data || data.matches || []).forEach(match => {
-                        matches.push({
-                            homeTeam: `${getCountryFlag(match.home_team?.country)} ${match.home_team?.name}`,
-                            awayTeam: `${getCountryFlag(match.away_team?.country)} ${match.away_team?.name}`,
-                            time: formatTime(match.datetime),
-                            venue: match.venue?.name || '待定',
-                            group: match.stage || '小组赛'
-                        });
-                    });
-                } else if (endpoint.includes('zafronix.com')) {
-                    // Zafronix API 格式
-                    (data.matches || []).forEach(match => {
-                        matches.push({
-                            homeTeam: `${match.homeTeamFlag || ''} ${match.homeTeam}`,
-                            awayTeam: `${match.awayTeamFlag || ''} ${match.awayTeam}`,
-                            time: formatTime(match.datetime),
-                            venue: match.location || '待定',
-                            group: match.group || '小组赛'
-                        });
-                    });
-                }
-            } catch (err) {
-                console.error('Error parsing match data:', err);
-            }
-
-            return matches;
-        }
-
-        // 格式化时间显示
-        function formatTime(datetime) {
-            if (!datetime) return '时间待定';
-            try {
-                const date = new Date(datetime);
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                return `北京时间 ${hours}:${minutes}`;
-            } catch (err) {
-                return datetime;
-            }
-        }
-
-        // 获取国家旗帜emoji
-        function getCountryFlag(countryCode) {
-            if (!countryCode) return '';
-            const flags = {
-                'CAN': '🇨🇦', 'BIH': '🇧🇦', 'USA': '🇺🇸', 'PAR': '🇵🇾',
-                'QAT': '🇶🇦', 'SUI': '🇨🇭', 'BRA': '🇧🇷', 'MAR': '🇲🇦',
-                'HAI': '🇭🇹', 'SCO': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'AUS': '🇦🇺', 'TUR': '🇹🇷'
-            };
-            return flags[countryCode] || '';
         }
 
         // 更新今日比赛显示
@@ -10355,7 +10330,9 @@
             matchesContainer.innerHTML = matches.map(match => `
                 <div class="match-card">
                     <div class="match-teams">
-                        ${match.homeTeam} <span class="match-vs">VS</span> ${match.awayTeam}
+                        ${match.homeTeam}
+                        <span class="match-vs">${match.score}</span>
+                        ${match.awayTeam}
                     </div>
                     <div class="match-info">
                         <div class="match-info-item">
