@@ -109,6 +109,34 @@
             font-weight: bold;
         }
 
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .search-input {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1em;
+            width: 300px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #ffd700;
+        }
+
         .pitch-container {
             background: linear-gradient(180deg,
                 rgba(10, 120, 50, 0.9) 0%,
@@ -645,6 +673,10 @@
             <button class="filter-btn" onclick="filterTeams('america')">美洲</button>
             <button class="filter-btn" onclick="filterTeams('asia')">亚洲</button>
             <button class="filter-btn" onclick="filterTeams('africa')">非洲</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="搜索国家名称..." oninput="searchTeams(this.value)">
         </div>
 
         <div class="team-selector">
@@ -9620,6 +9652,10 @@
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
+            // 清空搜索框
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) searchInput.value = '';
+
             // 获取所有球队按钮
             const teamButtons = document.querySelectorAll('.team-btn');
 
@@ -9637,6 +9673,33 @@
                     }
                 });
             }
+        }
+
+        function searchTeams(keyword) {
+            // 如果搜索框有内容，清除分类筛选状态
+            if (keyword.trim()) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            }
+
+            const teamButtons = document.querySelectorAll('.team-btn');
+            const searchText = keyword.trim().toLowerCase();
+
+            if (!searchText) {
+                // 如果搜索框为空，恢复到"全部"状态
+                teamButtons.forEach(btn => btn.classList.remove('hidden'));
+                document.querySelector('.filter-btn').classList.add('active');
+                return;
+            }
+
+            // 根据搜索关键词筛选
+            teamButtons.forEach(btn => {
+                const teamName = btn.textContent.toLowerCase();
+                if (teamName.includes(searchText)) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            });
         }
 
         function showTeam(teamKey, button) {
