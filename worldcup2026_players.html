@@ -344,6 +344,107 @@
             font-style: italic;
         }
 
+        .coach-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto 40px;
+            max-width: 900px;
+        }
+
+        .coach-section-title {
+            text-align: center;
+            color: #ffd700;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .coach-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .coach-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+            border-color: #fff;
+        }
+
+        .coach-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #000;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .coach-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .coach-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .coach-name {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .coach-name-en {
+            font-size: 1em;
+            color: #aaa;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .coach-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .coach-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.95em;
+            color: #ccc;
+        }
+
+        .coach-intro-brief {
+            font-size: 0.95em;
+            color: #bbb;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
         .team-info {
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
@@ -660,6 +761,29 @@
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
         }
 
+        .modal-achievements {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .achievement-item {
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border-left: 4px solid #ffd700;
+            border-radius: 8px;
+            color: #ddd;
+            font-size: 1em;
+            line-height: 1.6;
+            transition: all 0.3s;
+        }
+
+        .achievement-item:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 215, 0, 0.15));
+            transform: translateX(5px);
+            border-left-width: 6px;
+        }
+
         .modal-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -912,12 +1036,65 @@
         </div>
     </div>
 
+    <!-- 主教练详情弹窗 -->
+    <div id="coachModal" class="player-modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeCoachModal()">×</div>
+            <div class="modal-header">
+                <div class="modal-player-photo">
+                    <img id="modalCoachPhoto" src="" alt="">
+                </div>
+                <div class="modal-player-name" id="modalCoachName"></div>
+                <div class="modal-player-name-en" id="modalCoachNameEn"></div>
+                <div class="modal-player-basics">
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">年龄</div>
+                        <div class="modal-basic-value" id="modalCoachAge"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">国籍</div>
+                        <div class="modal-basic-value" id="modalCoachNationality"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">执教时间</div>
+                        <div class="modal-basic-value" id="modalCoachSince"></div>
+                    </div>
+                    <div class="modal-basic-item">
+                        <div class="modal-basic-label">战术体系</div>
+                        <div class="modal-basic-value" id="modalCoachTactics"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">教练介绍</div>
+                    <div class="modal-intro" id="modalCoachIntro"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">主要成就</div>
+                    <div class="modal-achievements" id="modalCoachAchievements"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const teams = {
             spain: {
                 name: '西班牙',
                 flag: '🇪🇸',
                 formation: '4-3-3',
+                coach: {
+                    name: 'Luis de la Fuente',
+                    nameCN: '路易斯·德拉富恩特',
+                    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Luis_de_la_Fuente_2023.jpg/220px-Luis_de_la_Fuente_2023.jpg',
+                    age: 64,
+                    nationality: '西班牙',
+                    since: '2022年',
+                    intro: '西班牙国家队主教练，前职业球员，司职左后卫。曾效力于毕尔巴鄂竞技和塞维利亚。2022年接任西班牙国家队主教练，2024年率队夺得欧洲杯冠军。执教风格注重传控，善于培养年轻球员，在西班牙青年队体系中积累了丰富经验。战术灵活，强调团队配合和高位逼抢。',
+                    achievements: ['2024年欧洲杯冠军', '2023年欧国联冠军', '西班牙U21主教练期间夺得2019年欧青赛冠军'],
+                    tactics: '4-3-3传控体系'
+                },
                 players: {
                     gk: [{
                         num: 1,
@@ -1102,6 +1279,17 @@
                 name: '法国',
                 flag: '🇫🇷',
                 formation: '4-2-3-1',
+                coach: {
+                    name: 'Didier Deschamps',
+                    nameCN: '迪迪埃·德尚',
+                    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Didier_Deschamps_2018.jpg/220px-Didier_Deschamps_2018.jpg',
+                    age: 57,
+                    nationality: '法国',
+                    since: '2012年',
+                    intro: '法国国家队主教练，前职业球员，司职防守型中场。球员时代效力于马赛、尤文图斯等豪门，曾担任队长赢得1998年世界杯和2000年欧洲杯。2012年接任法国国家队主教练，2018年率队夺得世界杯冠军，2022年带队打进决赛。2026世界杯后将卸任。执教风格务实，注重防守反击，善于管理球星。',
+                    achievements: ['2018年世界杯冠军', '2022年世界杯亚军', '2021年欧国联冠军', '2016年欧洲杯亚军'],
+                    tactics: '4-2-3-1防反体系'
+                },
                 players: {
                     gk: [{
                         num: 1,
@@ -1286,6 +1474,17 @@
                 name: '阿根廷',
                 flag: '🇦🇷',
                 formation: '4-3-3',
+                coach: {
+                    name: 'Lionel Scaloni',
+                    nameCN: '利昂内尔·斯卡洛尼',
+                    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Lionel_Scaloni_2022.jpg/220px-Lionel_Scaloni_2022.jpg',
+                    age: 48,
+                    nationality: '阿根廷',
+                    since: '2018年',
+                    intro: '阿根廷国家队主教练，前职业球员，司职右后卫。曾效力于拉科鲁尼亚等俱乐部，是梅西的前队友。2018年接任阿根廷国家队主教练，2021年率队夺得美洲杯冠军，2022年率队夺得世界杯冠军，终结阿根廷36年世界杯冠军荒。执教风格务实稳健，善于激发球员潜力，打造了极具凝聚力的"La Scaloneta"。',
+                    achievements: ['2022年世界杯冠军', '2021年美洲杯冠军', '2022年欧美杯冠军'],
+                    tactics: '4-3-3灵活变阵'
+                },
                 players: {
                     gk: [{
                         num: 23,
@@ -1654,6 +1853,17 @@
                 name: '巴西',
                 flag: '🇧🇷',
                 formation: '4-3-3',
+                coach: {
+                    name: 'Dorival Júnior',
+                    nameCN: '多里瓦尔·儒尼奥尔',
+                    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Dorival_J%C3%BAnior_2024.jpg/220px-Dorival_J%C3%BAnior_2024.jpg',
+                    age: 64,
+                    nationality: '巴西',
+                    since: '2024年',
+                    intro: '巴西国家队主教练，前职业球员，司职中场。出生于圣保罗州，执教经验丰富。2022年率弗拉门戈夺得南美解放者杯冠军，2023年率圣保罗夺得巴西杯冠军。2024年1月接任巴西国家队主教练，带队征战2026世界杯。执教风格注重战术纪律和球队整体性，善于激发球员斗志。',
+                    achievements: ['2022年南美解放者杯冠军(弗拉门戈)', '2023年巴西杯冠军(圣保罗)', '2022年巴西杯冠军(弗拉门戈)'],
+                    tactics: '4-3-3攻守平衡'
+                },
                 players: {
                     gk: [{
                         num: 1,
@@ -1838,6 +2048,17 @@
                 name: '德国',
                 flag: '🇩🇪',
                 formation: '4-2-3-1',
+                coach: {
+                    name: 'Julian Nagelsmann',
+                    nameCN: '尤利安·纳格尔斯曼',
+                    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Julian_Nagelsmann_2023.jpg/220px-Julian_Nagelsmann_2023.jpg',
+                    age: 38,
+                    nationality: '德国',
+                    since: '2023年',
+                    intro: '德国国家队主教练，德国最年轻的顶级教练之一。曾执教霍芬海姆、莱比锡和拜仁慕尼黑，2021年以2500万欧元转会费成为史上最贵主教练。2023年接任德国国家队主教练，带领德国队在2024年欧洲杯表现出色。执教风格现代化，战术理念先进，注重高位逼抢和快速转换，善于运用数据分析。年轻有为，被誉为德国足球的未来。',
+                    achievements: ['拜仁慕尼黑德甲冠军', '德国年度最佳教练'],
+                    tactics: '4-2-3-1高位逼抢'
+                },
                 players: {
                     gk: [{
                         num: 1,
@@ -9827,6 +10048,40 @@
             button.classList.add('active');
 
             display.innerHTML = `
+                ${team.coach ? `
+                <div class="coach-section">
+                    <div class="coach-section-title">🎖️ 主教练</div>
+                    <div class="coach-card" data-team="${teamKey}">
+                        <div class="coach-avatar">
+                            <img src="${team.coach.photo}" alt="${team.coach.nameCN}" onerror="this.style.display='none';this.parentElement.textContent='${team.coach.nameCN.substring(0, 2)}'">
+                        </div>
+                        <div class="coach-info">
+                            <div class="coach-name">${team.coach.nameCN}</div>
+                            <div class="coach-name-en">${team.coach.name}</div>
+                            <div class="coach-meta">
+                                <div class="coach-meta-item">
+                                    <span>🎂</span>
+                                    <span>${team.coach.age}岁</span>
+                                </div>
+                                <div class="coach-meta-item">
+                                    <span>🏳️</span>
+                                    <span>${team.coach.nationality}</span>
+                                </div>
+                                <div class="coach-meta-item">
+                                    <span>📅</span>
+                                    <span>执教: ${team.coach.since}</span>
+                                </div>
+                                <div class="coach-meta-item">
+                                    <span>⚽</span>
+                                    <span>${team.coach.tactics}</span>
+                                </div>
+                            </div>
+                            <div class="coach-intro-brief">${team.coach.intro.substring(0, 100)}...</div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
                 <div class="pitch-container">
                     <div class="formation-title">${team.flag} ${team.name} - 阵型 ${team.formation}</div>
 
@@ -9918,6 +10173,15 @@
                     const index = parseInt(this.getAttribute('data-index'));
                     const player = teams[teamKey].players[position][index];
                     openPlayerModal(player);
+                });
+            });
+
+            // 添加主教练卡片点击事件
+            document.querySelectorAll('.coach-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const teamKey = this.getAttribute('data-team');
+                    const coach = teams[teamKey].coach;
+                    openCoachModal(coach);
                 });
             });
         }
@@ -10209,11 +10473,73 @@
             document.body.style.overflow = 'auto';
         }
 
+        // 打开主教练详情弹窗
+        function openCoachModal(coach) {
+            if (!coach) {
+                alert('该球队暂无主教练信息');
+                return;
+            }
+
+            const modal = document.getElementById('coachModal');
+
+            // 填充主教练信息
+            document.getElementById('modalCoachName').textContent = coach.nameCN;
+            document.getElementById('modalCoachNameEn').textContent = coach.name;
+            document.getElementById('modalCoachAge').textContent = coach.age ? `${coach.age}岁` : '---';
+            document.getElementById('modalCoachNationality').textContent = coach.nationality || '---';
+            document.getElementById('modalCoachSince').textContent = coach.since || '---';
+            document.getElementById('modalCoachTactics').textContent = coach.tactics || '---';
+
+            // 主教练照片
+            const photoImg = document.getElementById('modalCoachPhoto');
+            if (coach.photo) {
+                photoImg.src = coach.photo;
+                photoImg.style.display = 'block';
+                photoImg.onerror = function() {
+                    this.style.display = 'none';
+                };
+            } else {
+                photoImg.style.display = 'none';
+            }
+
+            // 主教练介绍
+            document.getElementById('modalCoachIntro').textContent = coach.intro || '暂无介绍';
+
+            // 成就列表
+            const achievementsContainer = document.getElementById('modalCoachAchievements');
+            achievementsContainer.innerHTML = '';
+            if (coach.achievements && coach.achievements.length > 0) {
+                coach.achievements.forEach(achievement => {
+                    const item = document.createElement('div');
+                    item.className = 'achievement-item';
+                    item.innerHTML = `<span style="color: #ffd700;">🏆</span> ${achievement}`;
+                    achievementsContainer.appendChild(item);
+                });
+            } else {
+                achievementsContainer.innerHTML = '<div style="color: #aaa;">暂无成就数据</div>';
+            }
+
+            // 显示模态框
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭主教练详情弹窗
+        function closeCoachModal() {
+            const modal = document.getElementById('coachModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
         // 点击模态框外部关闭
         document.addEventListener('click', function(e) {
-            const modal = document.getElementById('playerModal');
-            if (e.target === modal) {
+            const playerModal = document.getElementById('playerModal');
+            const coachModal = document.getElementById('coachModal');
+            if (e.target === playerModal) {
                 closePlayerModal();
+            }
+            if (e.target === coachModal) {
+                closeCoachModal();
             }
         });
 
@@ -10221,6 +10547,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closePlayerModal();
+                closeCoachModal();
             }
         });
 
