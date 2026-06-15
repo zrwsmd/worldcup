@@ -66,11 +66,20 @@ jobs:
 
           echo "数据已更新"
 
-      - name: 提交更改
+      - name: 提交更改到master
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add index.html worldcup2026.json
           git commit -m "chore: 自动更新世界杯赛程数据 $(date +'%Y-%m-%d %H:%M')"
-          git push
+          git push origin master
+
+      - name: 同步到gh-pages分支
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+          git merge master -m "自动同步: 合并master分支的数据更新"
+          git push origin gh-pages
+          git checkout master
