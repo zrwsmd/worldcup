@@ -15031,7 +15031,7 @@ const scheduleData = [
             groupNames.forEach(groupName => {
                 const teams = standings[groupName];
 
-                if (teams.length === 0) return;
+                if (!teams || teams.length === 0) return;
 
                 html += `
                     <div class="standings-group">
