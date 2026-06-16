@@ -15023,20 +15023,13 @@ const scheduleData = [
         // 渲染积分榜
         function renderStandings() {
             const standingsContent = document.getElementById('standingsContent');
-
-            console.log('=== 开始渲染积分榜 ===');
-            console.log('scheduleData长度:', scheduleData ? scheduleData.length : 'undefined');
-
             const standings = calculateStandings();
-            console.log('计算后的standings:', standings);
-
             const groupNames = ['A组', 'B组', 'C组', 'D组', 'E组', 'F组', 'G组', 'H组', 'I组', 'J组', 'K组', 'L组'];
 
             let html = '';
 
             groupNames.forEach(groupName => {
                 const teams = standings[groupName];
-                console.log(groupName + '队伍数量:', teams ? teams.length : 'undefined');
 
                 if (!teams || teams.length === 0) return;
 
@@ -15090,9 +15083,7 @@ const scheduleData = [
                 `;
             });
 
-            console.log('生成的HTML长度:', html.length);
             standingsContent.innerHTML = html;
-            console.log('=== 渲染完成 ===');
         }
     </script>
 </body>
