@@ -998,6 +998,83 @@
             display: block;
         }
 
+        /* 积分榜容器 */
+        .standings-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .standings-container.active {
+            display: block;
+        }
+
+        .standings-group {
+            margin-bottom: 40px;
+        }
+
+        .standings-group-title {
+            font-size: 1.6em;
+            color: #ffd700;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 5px solid #ffd700;
+            border-radius: 5px;
+        }
+
+        .standings-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .standings-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 12px 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .standings-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .standings-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .standings-table .team-cell {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .standings-table .rank-cell {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .standings-table tr.qualified {
+            background: rgba(34, 139, 34, 0.15);
+            border-left: 4px solid #22c55e;
+        }
+
+        .standings-table tr.qualified:hover {
+            background: rgba(34, 139, 34, 0.25);
+        }
+
         /* 赛程阶段筛选 */
         .stage-filter {
             display: flex;
@@ -1162,6 +1239,7 @@
         <div class="view-toggle">
             <button class="view-toggle-btn active" onclick="switchView('lineup')">⚽ 球队阵容</button>
             <button class="view-toggle-btn" onclick="switchView('schedule')">📅 完整赛程</button>
+            <button class="view-toggle-btn" onclick="switchView('standings')">📊 积分榜</button>
         </div>
 
         <!-- 阵容视图容器 -->
@@ -1311,6 +1389,11 @@
             </div>
 
             <div id="scheduleContent"></div>
+        </div>
+
+        <!-- 积分榜容器 -->
+        <div class="standings-container" id="standingsContainer" style="display: none;">
+            <div id="standingsContent"></div>
         </div>
     </div>
 
@@ -14746,19 +14829,32 @@ const scheduleData = [
         function switchView(view) {
             const lineupContainer = document.getElementById('lineupContainer');
             const scheduleContainer = document.getElementById('scheduleContainer');
+            const standingsContainer = document.getElementById('standingsContainer');
             const buttons = document.querySelectorAll('.view-toggle-btn');
 
             if (view === 'lineup') {
                 lineupContainer.style.display = 'block';
                 scheduleContainer.classList.remove('active');
+                standingsContainer.classList.remove('active');
                 buttons[0].classList.add('active');
                 buttons[1].classList.remove('active');
+                buttons[2].classList.remove('active');
             } else if (view === 'schedule') {
                 lineupContainer.style.display = 'none';
                 scheduleContainer.classList.add('active');
+                standingsContainer.classList.remove('active');
                 buttons[0].classList.remove('active');
                 buttons[1].classList.add('active');
+                buttons[2].classList.remove('active');
                 renderSchedule('all');
+            } else if (view === 'standings') {
+                lineupContainer.style.display = 'none';
+                scheduleContainer.classList.remove('active');
+                standingsContainer.classList.add('active');
+                buttons[0].classList.remove('active');
+                buttons[1].classList.remove('active');
+                buttons[2].classList.add('active');
+                renderStandings();
             }
         }
 
@@ -14828,6 +14924,166 @@ const scheduleData = [
             });
 
             scheduleContent.innerHTML = html;
+        }
+
+        // 计算积分榜
+        function calculateStandings() {
+            const groups = {};
+            const groupNames = ['A组', 'B组', 'C组', 'D组', 'E组', 'F组', 'G组', 'H组', 'I组', 'J组', 'K组', 'L组'];
+
+            // 初始化各组
+            groupNames.forEach(group => {
+                groups[group] = {};
+            });
+
+            // 筛选小组赛已完赛的比赛
+            const groupMatches = scheduleData.filter(match =>
+                match.stage === 'group' && match.score !== null
+            );
+
+            // 统计每场比赛
+            groupMatches.forEach(match => {
+                const [homeScore, awayScore] = match.score.split('-').map(Number);
+                const homeTeam = match.homeTeam;
+                const awayTeam = match.awayTeam;
+                const group = match.group;
+
+                // 初始化队伍数据
+                if (!groups[group][homeTeam]) {
+                    groups[group][homeTeam] = {
+                        team: homeTeam,
+                        played: 0,
+                        won: 0,
+                        drawn: 0,
+                        lost: 0,
+                        goalsFor: 0,
+                        goalsAgainst: 0,
+                        goalDifference: 0,
+                        points: 0
+                    };
+                }
+                if (!groups[group][awayTeam]) {
+                    groups[group][awayTeam] = {
+                        team: awayTeam,
+                        played: 0,
+                        won: 0,
+                        drawn: 0,
+                        lost: 0,
+                        goalsFor: 0,
+                        goalsAgainst: 0,
+                        goalDifference: 0,
+                        points: 0
+                    };
+                }
+
+                // 更新主队数据
+                groups[group][homeTeam].played++;
+                groups[group][homeTeam].goalsFor += homeScore;
+                groups[group][homeTeam].goalsAgainst += awayScore;
+
+                // 更新客队数据
+                groups[group][awayTeam].played++;
+                groups[group][awayTeam].goalsFor += awayScore;
+                groups[group][awayTeam].goalsAgainst += homeScore;
+
+                // 判断胜负
+                if (homeScore > awayScore) {
+                    groups[group][homeTeam].won++;
+                    groups[group][homeTeam].points += 3;
+                    groups[group][awayTeam].lost++;
+                } else if (homeScore < awayScore) {
+                    groups[group][awayTeam].won++;
+                    groups[group][awayTeam].points += 3;
+                    groups[group][homeTeam].lost++;
+                } else {
+                    groups[group][homeTeam].drawn++;
+                    groups[group][awayTeam].drawn++;
+                    groups[group][homeTeam].points += 1;
+                    groups[group][awayTeam].points += 1;
+                }
+
+                // 计算净胜球
+                groups[group][homeTeam].goalDifference = groups[group][homeTeam].goalsFor - groups[group][homeTeam].goalsAgainst;
+                groups[group][awayTeam].goalDifference = groups[group][awayTeam].goalsFor - groups[group][awayTeam].goalsAgainst;
+            });
+
+            // 对每组进行排序
+            Object.keys(groups).forEach(group => {
+                groups[group] = Object.values(groups[group]).sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+                    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+                    return 0;
+                });
+            });
+
+            return groups;
+        }
+
+        // 渲染积分榜
+        function renderStandings() {
+            const standingsContent = document.getElementById('standingsContent');
+            const standings = calculateStandings();
+            const groupNames = ['A组', 'B组', 'C组', 'D组', 'E组', 'F组', 'G组', 'H组', 'I组', 'J组', 'K组', 'L组'];
+
+            let html = '';
+
+            groupNames.forEach(groupName => {
+                const teams = standings[groupName];
+
+                if (teams.length === 0) return;
+
+                html += `
+                    <div class="standings-group">
+                        <div class="standings-group-title">${groupName}</div>
+                        <div class="standings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>队伍</th>
+                                        <th>场次</th>
+                                        <th>胜</th>
+                                        <th>平</th>
+                                        <th>负</th>
+                                        <th>进球</th>
+                                        <th>失球</th>
+                                        <th>净胜球</th>
+                                        <th>积分</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                teams.forEach((team, index) => {
+                    const rank = index + 1;
+                    const qualifiedClass = rank <= 2 ? 'qualified' : '';
+
+                    html += `
+                        <tr class="${qualifiedClass}">
+                            <td class="rank-cell">${rank}</td>
+                            <td class="team-cell">${team.team}</td>
+                            <td>${team.played}</td>
+                            <td>${team.won}</td>
+                            <td>${team.drawn}</td>
+                            <td>${team.lost}</td>
+                            <td>${team.goalsFor}</td>
+                            <td>${team.goalsAgainst}</td>
+                            <td>${team.goalDifference > 0 ? '+' : ''}${team.goalDifference}</td>
+                            <td><strong>${team.points}</strong></td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            });
+
+            standingsContent.innerHTML = html;
         }
     </script>
 </body>
