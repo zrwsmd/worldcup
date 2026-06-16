@@ -125,11 +125,11 @@ const venueNames = {
     'Philadelphia': '费城'
 };
 
-// 将UTC时间转换为北京时间
+// 将UTC时间转换为北京时间（返回日期和时间）
 function convertToBeijingTime(dateStr, timeStr) {
     // 解析时间字符串，例如 "13:00 UTC-6"
     const timeMatch = timeStr.match(/(\d+):(\d+)\s+UTC([+-]\d+)/);
-    if (!timeMatch) return '待定';
+    if (!timeMatch) return { date: dateStr, time: '待定' };
 
     const hours = parseInt(timeMatch[1]);
     const minutes = parseInt(timeMatch[2]);
@@ -139,15 +139,22 @@ function convertToBeijingTime(dateStr, timeStr) {
     const beijingOffset = 8;
     const hourDiff = beijingOffset - utcOffset;
 
-    const date = new Date(dateStr + 'T00:00:00');
-    date.setHours(hours + hourDiff);
-    date.setMinutes(minutes);
+    // 使用完整的日期时间对象进行转换，会自动处理跨天
+    const date = new Date(dateStr + 'T' + hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':00');
+    date.setHours(date.getHours() + hourDiff);
 
-    // 格式化为 HH:MM
+    // 格式化日期为 YYYY-MM-DD
+    const bjYear = date.getFullYear();
+    const bjMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+    const bjDay = date.getDate().toString().padStart(2, '0');
+    const bjDate = `${bjYear}-${bjMonth}-${bjDay}`;
+
+    // 格式化时间为 HH:MM
     const bjHours = date.getHours().toString().padStart(2, '0');
     const bjMinutes = date.getMinutes().toString().padStart(2, '0');
+    const bjTime = `${bjHours}:${bjMinutes}`;
 
-    return `${bjHours}:${bjMinutes}`;
+    return { date: bjDate, time: bjTime };
 }
 
 // 获取赛事阶段标识
@@ -186,14 +193,14 @@ const scheduleData = jsonData.matches.map(match => {
     const awayTeamName = countryNames[match.team2] || match.team2;
     const homeTeam = countryFlags[match.team1] ? `${countryFlags[match.team1]} ${homeTeamName}` : homeTeamName;
     const awayTeam = countryFlags[match.team2] ? `${countryFlags[match.team2]} ${awayTeamName}` : awayTeamName;
-    const time = match.time ? convertToBeijingTime(match.date, match.time) : '待定';
+    const beijingDateTime = match.time ? convertToBeijingTime(match.date, match.time) : { date: match.date, time: '待定' };
     const stage = getStage(match.round);
     const venue = venueNames[match.ground] || match.ground;
     const group = getChineseGroup(match.group || match.round);
 
     return {
-        date: match.date,
-        time: time,
+        date: beijingDateTime.date,
+        time: beijingDateTime.time,
         homeTeam: homeTeam,
         awayTeam: awayTeam,
         venue: venue,
