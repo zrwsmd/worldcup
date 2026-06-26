@@ -1,0 +1,15 @@
+{
+  "name": "worldcup-2026",
+  "version": "1.0.0",
+  "description": "一个精美的2026世界杯球星阵容展示页面，采用动态战术布阵展示各国家队的首发阵容和球员信息。",
+  "main": "convert_schedule.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}
