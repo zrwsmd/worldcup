@@ -1,0 +1,62 @@
+2026世界杯淘汰赛对阵图 - 每日自动更新工具
+==========================================
+
+【文件说明】
+- make_bracket_daily.py   主程序，运行它就会生成最新的PDF
+- WQYZenHei.ttf           中文字体文件，必须和脚本放在同一目录，不要删除或移动
+- output/                 生成的PDF会保存在这里，文件名带日期
+- worldcup2026_cache.json 自动生成的数据缓存，用于网络异常时兜底，可以不管它
+
+【环境准备（只需要做一次）】
+1. 确保电脑已安装 Python 3（建议 3.8 以上版本）
+   检查方法：打开命令行/终端，输入 python --version 或 python3 --version
+
+2. 安装所需的库，在命令行运行：
+   pip install reportlab requests
+
+【如何运行】
+方法一：手动运行
+   打开命令行，进入这个文件夹，运行：
+   python make_bracket_daily.py
+   
+   (Windows 用户如果 python 命令不认，试试 python3 或 py)
+
+方法二：设置每天自动运行
+
+   --- Windows 用户 ---
+   1. 打开"任务计划程序"（在开始菜单搜索"任务计划程序"）
+   2. 点击右侧"创建基本任务"
+   3. 名称随便填，比如"世界杯赛程更新"
+   4. 触发器选择"每天"，设置一个时间（比如每天早上8点）
+   5. 操作选择"启动程序"
+      程序路径填：python.exe 的完整路径（一般是 C:\Python3x\python.exe）
+      参数填：完整脚本路径，比如 E:\claude-project\worldcup-2026\make_bracket_daily.py
+      起始于：填脚本所在的文件夹路径，比如 E:\claude-project\worldcup-2026
+   6. 完成后，每天会自动在 output 文件夹里生成新的PDF
+
+   --- Mac / Linux 用户 ---
+   1. 打开终端，输入 crontab -e
+   2. 加一行（假设脚本放在 /Users/yourname/worldcup-2026/）：
+      0 8 * * * /usr/bin/python3 /Users/yourname/worldcup-2026/make_bracket_daily.py
+      这表示每天早上8点自动运行一次
+   3. 保存退出即可
+
+【输出结果】
+每次运行后，output 文件夹里会多一个文件，例如：
+   2026世界杯淘汰赛对阵图_2026-06-30.pdf
+文件名里的日期就是生成当天的日期，不会覆盖之前生成的文件，
+所以你可以保留每天的历史版本做对比。
+
+【常见问题】
+Q: 提示找不到 WQYZenHei.ttf？
+A: 确保这个字体文件和 make_bracket_daily.py 在同一个文件夹里，不要分开放。
+
+Q: 提示网络获取失败？
+A: 脚本会自动尝试用上次缓存的数据生成PDF（不是最新的，但能保证不崩溃）。
+   检查一下电脑能不能正常访问 github.com。
+
+Q: 想换个保存路径？
+A: 打开 make_bracket_daily.py，找到 OUTPUT_DIR 这一行，改成你想要的路径即可。
+
+Q: 为什么有些比赛还是显示"第XX场胜者"而不是真实队名？
+A: 因为那场比赛还没结束，无法判断谁晋级，等比赛打完后下次自动更新即可正常显示。
