@@ -1013,6 +1013,76 @@
             display: block;
         }
 
+        /* 淘汰赛对阵容器 */
+        .bracket-container {
+            display: none;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .bracket-container.active {
+            display: block;
+        }
+
+        .bracket-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .bracket-title {
+            font-size: 2em;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .bracket-subtitle {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .bracket-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .bracket-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        .bracket-legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: rgba(20, 99, 60, 1);
+        }
+
+        .bracket-legend-box.finished {
+            border: 2px solid #ffd700;
+        }
+
+        .bracket-legend-box.pending {
+            border: 2px solid rgba(46, 139, 87, 1);
+        }
+
+        #bracketContent {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 20px 0;
+        }
+
+        #bracketContent svg {
+            display: block;
+            margin: 0 auto;
+        }
+
         .standings-group {
             margin-bottom: 40px;
         }
@@ -1244,6 +1314,7 @@
             <button class="view-toggle-btn active" onclick="switchView('lineup')">⚽ 球队阵容</button>
             <button class="view-toggle-btn" onclick="switchView('schedule')">📅 完整赛程</button>
             <button class="view-toggle-btn" onclick="switchView('standings')">📊 积分榜</button>
+            <button class="view-toggle-btn" onclick="switchView('bracket')">🏆 淘汰赛对阵</button>
         </div>
 
         <!-- 阵容视图容器 -->
@@ -1398,6 +1469,25 @@
         <!-- 积分榜容器 -->
         <div class="standings-container" id="standingsContainer">
             <div id="standingsContent"></div>
+        </div>
+
+        <!-- 淘汰赛对阵容器 -->
+        <div class="bracket-container" id="bracketContainer">
+            <div class="bracket-header">
+                <div class="bracket-title">🏆 2026世界杯淘汰赛对阵图</div>
+                <div class="bracket-subtitle" id="bracketDataDate">数据加载中...</div>
+            </div>
+            <div class="bracket-legend">
+                <div class="bracket-legend-item">
+                    <div class="bracket-legend-box finished"></div>
+                    <span>已结束比赛</span>
+                </div>
+                <div class="bracket-legend-item">
+                    <div class="bracket-legend-box pending"></div>
+                    <span>未开始 / 待定对阵</span>
+                </div>
+            </div>
+            <div id="bracketContent"></div>
         </div>
     </div>
 
@@ -14834,31 +14924,48 @@ const scheduleData = [
             const lineupContainer = document.getElementById('lineupContainer');
             const scheduleContainer = document.getElementById('scheduleContainer');
             const standingsContainer = document.getElementById('standingsContainer');
+            const bracketContainer = document.getElementById('bracketContainer');
             const buttons = document.querySelectorAll('.view-toggle-btn');
 
             if (view === 'lineup') {
                 lineupContainer.style.display = 'block';
                 scheduleContainer.classList.remove('active');
                 standingsContainer.classList.remove('active');
+                bracketContainer.classList.remove('active');
                 buttons[0].classList.add('active');
                 buttons[1].classList.remove('active');
                 buttons[2].classList.remove('active');
+                buttons[3].classList.remove('active');
             } else if (view === 'schedule') {
                 lineupContainer.style.display = 'none';
                 scheduleContainer.classList.add('active');
                 standingsContainer.classList.remove('active');
+                bracketContainer.classList.remove('active');
                 buttons[0].classList.remove('active');
                 buttons[1].classList.add('active');
                 buttons[2].classList.remove('active');
+                buttons[3].classList.remove('active');
                 renderSchedule('all');
             } else if (view === 'standings') {
                 lineupContainer.style.display = 'none';
                 scheduleContainer.classList.remove('active');
                 standingsContainer.classList.add('active');
+                bracketContainer.classList.remove('active');
                 buttons[0].classList.remove('active');
                 buttons[1].classList.remove('active');
                 buttons[2].classList.add('active');
+                buttons[3].classList.remove('active');
                 renderStandings();
+            } else if (view === 'bracket') {
+                lineupContainer.style.display = 'none';
+                scheduleContainer.classList.remove('active');
+                standingsContainer.classList.remove('active');
+                bracketContainer.classList.add('active');
+                buttons[0].classList.remove('active');
+                buttons[1].classList.remove('active');
+                buttons[2].classList.remove('active');
+                buttons[3].classList.add('active');
+                renderBracket();
             }
         }
 
@@ -15088,6 +15195,445 @@ const scheduleData = [
             });
 
             standingsContent.innerHTML = html;
+        }
+
+        // ==================== 淘汰赛对阵图功能 ====================
+
+        // 中文队名映射字典
+        const FLAGS_CN = {
+            'South Africa': '南非', 'Canada': '加拿大', 'Germany': '德国', 'Paraguay': '巴拉圭',
+            'Netherlands': '荷兰', 'Morocco': '摩洛哥', 'Brazil': '巴西', 'Japan': '日本',
+            'France': '法国', 'Sweden': '瑞典', 'Ivory Coast': '科特迪瓦', 'Norway': '挪威',
+            'Mexico': '墨西哥', 'Ecuador': '厄瓜多尔', 'England': '英格兰', 'DR Congo': '刚果(金)',
+            'USA': '美国', 'Bosnia & Herzegovina': '波黑', 'Belgium': '比利时', 'Senegal': '塞内加尔',
+            'Portugal': '葡萄牙', 'Croatia': '克罗地亚', 'Spain': '西班牙', 'Austria': '奥地利',
+            'Switzerland': '瑞士', 'Algeria': '阿尔及利亚', 'Argentina': '阿根廷', 'Cape Verde': '佛得角',
+            'Colombia': '哥伦比亚', 'Ghana': '加纳', 'Australia': '澳大利亚', 'Egypt': '埃及',
+            'Serbia': '塞尔维亚', 'Ukraine': '乌克兰', 'Poland': '波兰', 'Romania': '罗马尼亚',
+            'Chile': '智利', 'Venezuela': '委内瑞拉', 'Honduras': '洪都拉斯', 'Costa Rica': '哥斯达黎加',
+            'Cameroon': '喀麦隆', 'Nigeria': '尼日利亚', 'Mali': '马里', 'Congo DR': '刚果(金)',
+            'Indonesia': '印度尼西亚', 'Saudi Arabia': '沙特阿拉伯', 'Iraq': '伊拉克', 'Oman': '阿曼',
+            'Qatar': '卡塔尔', 'Uruguay': '乌拉圭', 'Jordan': '约旦', 'Uzbekistan': '乌兹别克斯坦',
+            'New Zealand': '新西兰', 'Haiti': '海地', 'Turkey': '土耳其', 'Tunisia': '突尼斯',
+            'Iran': '伊朗', 'Cape Verde Islands': '佛得角', 'South Korea': '韩国', 'Czech Republic': '捷克'
+        };
+
+        function cnName(team) {
+            return FLAGS_CN[team] || team;
+        }
+
+        function fmtDate(dateStr) {
+            const parts = dateStr.split('-');
+            return `${parseInt(parts[1])}月${parseInt(parts[2])}日`;
+        }
+
+        // 从GitHub获取数据
+        async function fetchBracketData() {
+            const dataUrl = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+            const cacheKey = 'worldcup2026_bracket_cache';
+
+            try {
+                const response = await fetch(dataUrl, {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (WorldCupBracketBot/1.0)' }
+                });
+                const data = await response.json();
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                console.log('✓ 已从网络获取最新赛程数据');
+                return data;
+            } catch (error) {
+                console.warn('⚠ 网络获取失败，尝试使用本地缓存...', error);
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    console.log('✓ 已使用本地缓存数据（可能不是最新）');
+                    return JSON.parse(cached);
+                } else {
+                    console.error('✗ 没有可用的本地缓存');
+                    throw new Error('无法获取数据');
+                }
+            }
+        }
+
+        // 判断比赛胜者
+        function matchWinner(m) {
+            const score = m.score;
+            if (!score) return null;
+
+            const team1 = m.team1;
+            const team2 = m.team2;
+            if (!team1 || !team2) return null;
+
+            // 占位符还没解析出真实队伍
+            if ((team1.startsWith('W') && /^\d+$/.test(team1.substring(1))) ||
+                (team1.startsWith('L') && /^\d+$/.test(team1.substring(1))) ||
+                (team2.startsWith('W') && /^\d+$/.test(team2.substring(1))) ||
+                (team2.startsWith('L') && /^\d+$/.test(team2.substring(1)))) {
+                return null;
+            }
+
+            // 点球大战
+            if (score.p) {
+                const [p1, p2] = score.p;
+                return p1 > p2 ? team1 : team2;
+            }
+            // 加时赛
+            if (score.et) {
+                const [e1, e2] = score.et;
+                if (e1 !== e2) {
+                    return e1 > e2 ? team1 : team2;
+                }
+            }
+            // 常规时间
+            if (score.ft) {
+                const [f1, f2] = score.ft;
+                if (f1 !== f2) {
+                    return f1 > f2 ? team1 : team2;
+                }
+            }
+            return null;
+        }
+
+        // 判断比赛负者（用于季军赛）
+        function matchLoser(m) {
+            const winner = matchWinner(m);
+            if (winner === null) return null;
+            return winner === m.team1 ? m.team2 : m.team1;
+        }
+
+        // 解析占位符
+        function resolvePlaceholders(matchesByNum) {
+            let changed = true;
+            let rounds = 0;
+
+            while (changed && rounds < 10) {
+                changed = false;
+                rounds++;
+
+                for (const [num, m] of Object.entries(matchesByNum)) {
+                    for (const key of ['team1', 'team2']) {
+                        const val = m[key];
+                        if (!val) continue;
+
+                        if (val.startsWith('W') && /^\d+$/.test(val.substring(1))) {
+                            const refNum = parseInt(val.substring(1));
+                            const refMatch = matchesByNum[refNum];
+                            if (refMatch) {
+                                const winner = matchWinner(refMatch);
+                                if (winner) {
+                                    m[key] = winner;
+                                    changed = true;
+                                }
+                            }
+                        } else if (val.startsWith('L') && /^\d+$/.test(val.substring(1))) {
+                            const refNum = parseInt(val.substring(1));
+                            const refMatch = matchesByNum[refNum];
+                            if (refMatch) {
+                                const loser = matchLoser(refMatch);
+                                if (loser) {
+                                    m[key] = loser;
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matchesByNum;
+        }
+
+        // 获取显示标签
+        function teamLabel(team, num, slot) {
+            if (!team) return '待定';
+            if (team.startsWith('W') && /^\d+$/.test(team.substring(1))) {
+                return `第${team.substring(1)}场胜者`;
+            }
+            if (team.startsWith('L') && /^\d+$/.test(team.substring(1))) {
+                return `第${team.substring(1)}场负者`;
+            }
+            return cnName(team);
+        }
+
+        // 获取比分字符串
+        function matchScoreStr(m) {
+            const sc = m.score;
+            if (!sc) return { sc1: null, sc2: null, note: null };
+
+            let sc1 = null, sc2 = null, note = null;
+
+            if (sc.ft) {
+                [sc1, sc2] = sc.ft;
+            }
+            if (sc.et && (!sc.ft || JSON.stringify(sc.et) !== JSON.stringify(sc.ft))) {
+                [sc1, sc2] = sc.et;
+                note = '加时';
+            }
+            if (sc.p) {
+                const [p1, p2] = sc.p;
+                note = `点球 ${p1}-${p2}`;
+            }
+
+            return { sc1, sc2, note };
+        }
+
+        // 判断比赛是否结束
+        function isMatchDone(m) {
+            return matchWinner(m) !== null || (m.score && m.score.ft);
+        }
+
+        // 渲染淘汰赛对阵图
+        async function renderBracket() {
+            const bracketContent = document.getElementById('bracketContent');
+            const bracketDataDate = document.getElementById('bracketDataDate');
+
+            bracketContent.innerHTML = '<div style="text-align:center; padding:50px; color:#ffd700;">数据加载中...</div>';
+
+            try {
+                const data = await fetchBracketData();
+                const matches = data.matches;
+
+                // 给每场比赛编号
+                matches.forEach((m, i) => {
+                    m._num = i + 1;
+                });
+
+                // 构建编号索引
+                const matchesByNum = {};
+                matches.forEach(m => {
+                    matchesByNum[m._num] = m;
+                });
+
+                // 解析占位符
+                resolvePlaceholders(matchesByNum);
+
+                // 按轮次分组
+                const KO_ROUNDS = ['Round of 32', 'Round of 16', 'Quarter-final', 'Semi-final', 'Match for third place', 'Final'];
+                const bracket = {};
+                KO_ROUNDS.forEach(r => {
+                    bracket[r] = matches.filter(m => m.round === r);
+                });
+
+                // 更新日期
+                const today = new Date().toISOString().split('T')[0];
+                bracketDataDate.textContent = `数据截至 ${today} · 数据来源 openfootball/worldcup.json`;
+
+                // 绘制SVG
+                drawBracketSVG(bracket, bracketContent);
+
+            } catch (error) {
+                bracketContent.innerHTML = `<div style="text-align:center; padding:50px; color:#ff6b6b;">数据加载失败: ${error.message}</div>`;
+            }
+        }
+
+        // 绘制SVG对阵图
+        function drawBracketSVG(bracket, container) {
+            const r32 = bracket['Round of 32'] || [];
+            const r16 = bracket['Round of 16'] || [];
+            const qf = bracket['Quarter-final'] || [];
+            const sf = bracket['Semi-final'] || [];
+            const final = bracket['Final'] ? bracket['Final'][0] : null;
+            const third = bracket['Match for third place'] ? bracket['Match for third place'][0] : null;
+
+            if (r32.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:#ffd700;">淘汰赛数据尚未生成</div>';
+                return;
+            }
+
+            const svgWidth = 1600;
+            const svgHeight = 950;
+            const cardW = 168;
+            const cardH = 54;
+            const topMargin = 180;
+            const bottomMargin = 40;
+            const usableH = svgHeight - topMargin - bottomMargin;
+
+            // 列x坐标
+            const colWidth = 190;
+            const startXLeft = 40;
+            const colX = [];
+            for (let i = 0; i < 5; i++) {
+                colX[i] = startXLeft + i * colWidth + cardW / 2;
+            }
+            const finalX = colX[4];
+            const colXRight = [];
+            for (let i = 0; i < 4; i++) {
+                colXRight[i] = svgWidth - (startXLeft + i * colWidth + cardW / 2);
+            }
+
+            let svg = `<svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg">`;
+
+            // 背景渐变
+            svg += `
+                <defs>
+                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgb(10,77,46);stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:rgb(15,92,53);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:rgb(15,92,53);stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="${svgWidth}" height="${svgHeight}" fill="url(#bgGradient)"/>
+            `;
+
+            // 绘制比赛卡片函数
+            function drawMatchCard(cx, cy, m, w = cardW, h = cardH) {
+                const t1 = m.team1;
+                const t2 = m.team2;
+                const num = m._num;
+                const l1 = teamLabel(t1, num, 'team1');
+                const l2 = teamLabel(t2, num, 'team2');
+                const { sc1, sc2, note } = matchScoreStr(m);
+                const done = sc1 !== null;
+
+                const x0 = cx - w / 2;
+                const y0 = cy - h / 2;
+                const border = done ? '#ffd700' : '#2e8b57';
+                const borderWidth = done ? 1.6 : 1.0;
+
+                let card = `<g>`;
+                card += `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="6" fill="#14633c" stroke="${border}" stroke-width="${borderWidth}"/>`;
+
+                // 场次和日期
+                card += `<text x="${x0 + 5}" y="${y0 + h - 9}" font-size="7" fill="#cfe8d8" font-family="Microsoft YaHei">第${num}场</text>`;
+                card += `<text x="${x0 + w - 5}" y="${y0 + h - 9}" font-size="7" fill="#cfe8d8" text-anchor="end" font-family="Microsoft YaHei">${fmtDate(m.date)}</text>`;
+
+                // 队名
+                const row1Y = y0 + h - 23;
+                const row2Y = y0 + 8;
+
+                function fitText(s, maxLen = 11) {
+                    return s.length <= maxLen ? s : s.substring(0, maxLen - 1) + '…';
+                }
+
+                card += `<text x="${x0 + 8}" y="${row1Y}" font-size="10.5" fill="white" font-family="Microsoft YaHei">${fitText(l1)}</text>`;
+                card += `<text x="${x0 + 8}" y="${row2Y}" font-size="10.5" fill="white" font-family="Microsoft YaHei">${fitText(l2)}</text>`;
+
+                // 比分
+                if (done) {
+                    card += `<text x="${x0 + w - 8}" y="${row1Y}" font-size="11" fill="#ffd700" font-weight="bold" text-anchor="end" font-family="Microsoft YaHei">${sc1}</text>`;
+                    card += `<text x="${x0 + w - 8}" y="${row2Y}" font-size="11" fill="#ffd700" font-weight="bold" text-anchor="end" font-family="Microsoft YaHei">${sc2}</text>`;
+                } else {
+                    card += `<text x="${x0 + w - 8}" y="${row1Y}" font-size="9" fill="#cfe8d8" text-anchor="end" font-family="Microsoft YaHei">-</text>`;
+                    card += `<text x="${x0 + w - 8}" y="${row2Y}" font-size="9" fill="#cfe8d8" text-anchor="end" font-family="Microsoft YaHei">-</text>`;
+                }
+
+                // 备注
+                if (note) {
+                    card += `<text x="${cx}" y="${y0 - 9}" font-size="7" fill="#ffed4e" text-anchor="middle" font-family="Microsoft YaHei">${note}</text>`;
+                }
+
+                card += `</g>`;
+                return card;
+            }
+
+            // 连接线函数
+            function connector(x1, y1, x2, y2) {
+                const midX = (x1 + x2) / 2;
+                return `<path d="M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}" stroke="#5fae7a" stroke-width="1.2" fill="none"/>`;
+            }
+
+            // 计算y坐标
+            const n = 8;
+            const slotH = usableH / n;
+            const yPositionsR32 = [];
+            for (let i = 0; i < n; i++) {
+                yPositionsR32[i] = svgHeight - bottomMargin - slotH * (i + 0.5);
+            }
+
+            function pairY(positions) {
+                const result = [];
+                for (let i = 0; i < positions.length / 2; i++) {
+                    result[i] = (positions[2 * i] + positions[2 * i + 1]) / 2;
+                }
+                return result;
+            }
+
+            // 绘制32强赛
+            const leftR32 = r32.slice(0, 8);
+            const rightR32 = r32.slice(8, 16);
+
+            leftR32.forEach((m, i) => {
+                svg += drawMatchCard(colX[0], yPositionsR32[i], m);
+            });
+            rightR32.forEach((m, i) => {
+                svg += drawMatchCard(colXRight[0], yPositionsR32[i], m);
+            });
+
+            // 16强赛
+            const yR16 = pairY(yPositionsR32);
+            const leftR16 = r16.slice(0, 4);
+            const rightR16 = r16.slice(4, 8);
+
+            leftR16.forEach((m, i) => {
+                svg += connector(colX[0] + cardW / 2, yPositionsR32[2 * i], colX[1] - cardW / 2, yR16[i]);
+                svg += connector(colX[0] + cardW / 2, yPositionsR32[2 * i + 1], colX[1] - cardW / 2, yR16[i]);
+                svg += drawMatchCard(colX[1], yR16[i], m);
+            });
+            rightR16.forEach((m, i) => {
+                svg += connector(colXRight[0] - cardW / 2, yPositionsR32[2 * i], colXRight[1] + cardW / 2, yR16[i]);
+                svg += connector(colXRight[0] - cardW / 2, yPositionsR32[2 * i + 1], colXRight[1] + cardW / 2, yR16[i]);
+                svg += drawMatchCard(colXRight[1], yR16[i], m);
+            });
+
+            // 8强赛
+            const yQF = pairY(yR16);
+            const leftQF = qf.slice(0, 2);
+            const rightQF = qf.slice(2, 4);
+
+            leftQF.forEach((m, i) => {
+                svg += connector(colX[1] + cardW / 2, yR16[2 * i], colX[2] - cardW / 2, yQF[i]);
+                svg += connector(colX[1] + cardW / 2, yR16[2 * i + 1], colX[2] - cardW / 2, yQF[i]);
+                svg += drawMatchCard(colX[2], yQF[i], m);
+            });
+            rightQF.forEach((m, i) => {
+                svg += connector(colXRight[1] - cardW / 2, yR16[2 * i], colXRight[2] + cardW / 2, yQF[i]);
+                svg += connector(colXRight[1] - cardW / 2, yR16[2 * i + 1], colXRight[2] + cardW / 2, yQF[i]);
+                svg += drawMatchCard(colXRight[2], yQF[i], m);
+            });
+
+            // 半决赛
+            const ySF = pairY(yQF);
+            if (sf[0]) {
+                svg += connector(colX[2] + cardW / 2, yQF[0], colX[3] - cardW / 2, ySF[0]);
+                svg += connector(colX[2] + cardW / 2, yQF[1], colX[3] - cardW / 2, ySF[0]);
+                svg += drawMatchCard(colX[3], ySF[0], sf[0]);
+            }
+            if (sf[1]) {
+                svg += connector(colXRight[2] - cardW / 2, yQF[0], colXRight[3] + cardW / 2, ySF[0]);
+                svg += connector(colXRight[2] - cardW / 2, yQF[1], colXRight[3] + cardW / 2, ySF[0]);
+                svg += drawMatchCard(colXRight[3], ySF[0], sf[1]);
+            }
+
+            // 决赛
+            if (final) {
+                const finalY = ySF[0];
+                svg += connector(colX[3] + cardW / 2, ySF[0], finalX - (cardW + 20) / 2, finalY);
+                svg += connector(colXRight[3] - cardW / 2, ySF[0], finalX + (cardW + 20) / 2, finalY);
+                svg += drawMatchCard(finalX, finalY, final, cardW + 20, cardH + 12);
+                svg += `<text x="${finalX}" y="${finalY + cardH / 2 + 28}" font-size="13" fill="#ffd700" font-weight="bold" text-anchor="middle" font-family="Microsoft YaHei">🏆 决赛</text>`;
+            }
+
+            // 季军赛
+            if (third && final) {
+                const thirdY = ySF[0] - 140;
+                svg += drawMatchCard(finalX, thirdY, third);
+                svg += `<text x="${finalX}" y="${thirdY + cardH / 2 + 14}" font-size="11" fill="#cfe8d8" text-anchor="middle" font-family="Microsoft YaHei">季军赛</text>`;
+            }
+
+            // 轮次标签
+            const roundLabels = ['32强赛', '16强赛', '8强赛', '半决赛'];
+            const labelY = svgHeight - 95;
+            for (let i = 0; i < 4; i++) {
+                svg += `<text x="${colX[i]}" y="${labelY}" font-size="13" fill="#ffed4e" font-weight="bold" text-anchor="middle" font-family="Microsoft YaHei">${roundLabels[i]}</text>`;
+                svg += `<line x1="${colX[i] - 25}" y1="${labelY - 8}" x2="${colX[i] + 25}" y2="${labelY - 8}" stroke="#ffed4e" stroke-width="1"/>`;
+                svg += `<text x="${colXRight[i]}" y="${labelY}" font-size="13" fill="#ffed4e" font-weight="bold" text-anchor="middle" font-family="Microsoft YaHei">${roundLabels[i]}</text>`;
+                svg += `<line x1="${colXRight[i] - 25}" y1="${labelY - 8}" x2="${colXRight[i] + 25}" y2="${labelY - 8}" stroke="#ffed4e" stroke-width="1"/>`;
+            }
+
+            // 底部说明
+            svg += `<text x="${svgWidth / 2}" y="18" font-size="9" fill="#cfe8d8" text-anchor="middle" font-family="Microsoft YaHei">注：'第N场胜者/负者' 表示该位置由对应场次比赛结果决定，尚未产生具体球队</text>`;
+
+            svg += `</svg>`;
+
+            container.innerHTML = svg;
         }
     </script>
 </body>
